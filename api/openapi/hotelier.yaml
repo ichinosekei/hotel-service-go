@@ -1,0 +1,79 @@
+# спецификацию API для отелей и номеров.
+openapi: 3.0.0
+info:
+  title: Hotelier Service API
+  version: 1.0.0
+paths:
+  /hotels:
+    post:
+      summary: Create a hotel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+      responses:
+        '201':
+          description: Hotel created successfully
+    get:
+      summary: Get a list of hotels
+      responses:
+        '200':
+          description: List of hotels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hotel'
+  /rooms:
+    post:
+      summary: Create a room for a hotel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+      responses:
+        '201':
+          description: Room created successfully
+    get:
+      summary: Get rooms for a hotel
+      parameters:
+        - name: hotel_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of rooms for the hotel
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+components:
+  schemas:
+    Hotel:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        location:
+          type: string
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+        hotel_id:
+          type: integer
+        room_number:
+          type: string
+        price:
+          type: number
+          format: float
