@@ -1,5 +1,6 @@
 # Stage 1 - Build
-FROM golang:1.18 AS builder
+FROM golang:1.23 AS builder
+
 
 WORKDIR /app
 
@@ -10,15 +11,25 @@ RUN go mod download
 # Copy the source code
 COPY . .
 
+# Проверка существования директории configs
+RUN ls -l /app/configs
+
+# Проверка структуры исходного кода
+RUN ls -l /app/cmd/hotelier-service
+
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o hotelier-service ./cmd/hotelier-service
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o hotelier-service ./cmd/hotelier-service
 
 # Stage 2 - Run
 FROM alpine:latest
 
 WORKDIR /root
+# Копируем исполняемый файл из стадии сборки
 COPY --from=builder /app/hotelier-service .
+# Копируем конфигурацию
 COPY configs/hotelier-config.yaml ./config.yaml
+# Устанавливаем права на выполнение для бинарного файла
+RUN chmod +x ./hotelier-service
 
 # Run the binary
 CMD ["./hotelier-service", "-config", "./config.yaml"]

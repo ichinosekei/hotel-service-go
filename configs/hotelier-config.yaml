@@ -1,10 +1,9 @@
 # Конфигурационный файл для сервиса hotelier в формате YAML. С параметрами подключения к базе данных и порты.
+database:
+  host: "localhost"
+  port: 5432
+  user: "user"
+  password: "password"
+  dbname: "hotelier"
 server:
   port: 8080
-
-database:
-  host: db
-  port: 5432
-  user: hotelier
-  password: hotelier_password
-  name: hotelier_db

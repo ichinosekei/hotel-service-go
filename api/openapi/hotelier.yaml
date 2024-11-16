@@ -26,6 +26,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Hotel'
+
   /rooms:
     post:
       summary: Create a room for a hotel
@@ -54,6 +55,84 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Room'
+  /hotels/{id}:
+    put:
+      summary: Update hotel information
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                location:
+                  type: string
+      responses:
+        '200':
+          description: Hotel updated successfully
+        '404':
+          description: Hotel not found
+    delete:
+      summary: Delete a hotel
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Hotel deleted successfully
+        '404':
+          description: Hotel not found
+
+  /rooms/{id}:
+    put:
+      summary: Update room information
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                room_number:
+                  type: string
+                price:
+                  type: number
+                  format: float
+      responses:
+        '200':
+          description: Room updated successfully
+        '404':
+          description: Room not found
+    delete:
+      summary: Delete a room
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Room deleted successfully
+        '404':
+          description: Room not found
+
+
 components:
   schemas:
     Hotel:

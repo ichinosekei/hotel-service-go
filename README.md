@@ -50,6 +50,13 @@ final-project/
 ├── .gitignore              # Список файлов и папок, игнорируемых git
 └── README.md               # Основная документация по проекту
 
+
+
+
+
+
+
+
 ```
 
 ### План реализации hotelier service
@@ -82,7 +89,6 @@ final-project/
 * Скрипты миграции:
   Для автоматического применения миграций, добавить инициализацию базы данных в Dockerfile .
 ```dockerfile
-# Добавить миграции (необязательно)
 COPY migrations /migrations
 RUN ./migrate -path /migrations -database "postgres://hotelier:hotelier_password@db:5432/hotelier_db?sslmode=disable" up
 ```
