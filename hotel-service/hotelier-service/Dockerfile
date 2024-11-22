@@ -15,10 +15,10 @@ COPY . .
 RUN ls -l /app/configs
 
 # Проверка структуры исходного кода
-RUN ls -l /app/cmd/hotelier-service
+# RUN ls -l /app/cmd/hotelier-service
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o hotelier-service ./cmd/hotelier-service
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o hotelier-service ./hotel-service/hotelier-service
 
 # Stage 2 - Run
 FROM alpine:latest

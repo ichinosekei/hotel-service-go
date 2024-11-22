@@ -78,6 +78,33 @@ func (s *Service) CreateRoom(hotelID int, roomNumber string, price float64) (int
 	return id, nil
 }
 
+// GetRooms возвращает список комнат, возможно с фильтрацией по hotelID
+func (s *Service) GetRooms(hotelID int) ([]Room, error) {
+	query := "SELECT id, hotel_id, room_number, price FROM Rooms"
+	args := []interface{}{}
+
+	if hotelID > 0 {
+		query += " WHERE hotel_id = $1"
+		args = append(args, hotelID)
+	}
+
+	rows, err := s.Db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var rooms []Room
+	for rows.Next() {
+		var room Room
+		if err := rows.Scan(&room.ID, &room.HotelID, &room.RoomNumber, &room.Price); err != nil {
+			return nil, err
+		}
+		rooms = append(rooms, room)
+	}
+	return rooms, nil
+}
+
 // UpdateRoom updates room information.
 func (s *Service) UpdateRoom(id int, roomNumber string, price float64) error {
 	result, err := s.Db.Exec("UPDATE Rooms SET room_number = $1, price = $2 WHERE id = $3", roomNumber, price, id)

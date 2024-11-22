@@ -3,7 +3,7 @@ package hotelier_tests
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
-	"hotel-service-go/internal/hotelier"
+	"hotel-service-go/hotel-service/internal/hotelier"
 	"testing"
 )
 
