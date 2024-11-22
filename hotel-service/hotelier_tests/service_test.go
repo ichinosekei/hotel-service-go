@@ -142,3 +142,61 @@ func TestDeleteNonExistentRoom(t *testing.T) {
 		t.Fatalf("Expected error when deleting non-existent room, got nil")
 	}
 }
+
+func TestGetHotels(t *testing.T) {
+	service := hotelier.NewService(setupTestDB())
+
+	// Создаём тестовые данные
+	_, _ = service.CreateHotel("Hotel A", "City A")
+	_, _ = service.CreateHotel("Hotel B", "City B")
+	_, _ = service.CreateHotel("Hotel C", "City A") // Повторное использование "City A"
+
+	// Тест без фильтрации
+	hotels, err := service.GetHotels("")
+	if err != nil {
+		t.Fatalf("Failed to get hotels: %v", err)
+	}
+	if len(hotels) != 3 {
+		t.Fatalf("Expected 3 hotels, got %d", len(hotels))
+	}
+
+	// Тест с фильтрацией
+	hotelsFiltered, err := service.GetHotels("City A")
+	if err != nil {
+		t.Fatalf("Failed to get hotels with filter: %v", err)
+	}
+	if len(hotelsFiltered) != 2 {
+		t.Fatalf("Expected 2 hotels in City A, got %d", len(hotelsFiltered))
+	}
+}
+
+func TestGetRooms(t *testing.T) {
+	service := hotelier.NewService(setupTestDB())
+
+	// Создаём тестовые данные
+	hotel1, _ := service.CreateHotel("Hotel A", "City A")
+	hotel2, _ := service.CreateHotel("Hotel B", "City B")
+
+	// Добавляем комнаты в оба отеля
+	_, _ = service.CreateRoom(hotel1, "101", 100.0)
+	_, _ = service.CreateRoom(hotel1, "102", 120.0)
+	_, _ = service.CreateRoom(hotel2, "201", 150.0)
+
+	// Тест без фильтрации
+	rooms, err := service.GetRooms(0) // 0 — означает, что фильтр по hotel_id не применяется
+	if err != nil {
+		t.Fatalf("Failed to get rooms: %v", err)
+	}
+	if len(rooms) != 3 {
+		t.Fatalf("Expected 3 rooms, got %d", len(rooms))
+	}
+
+	// Тест с фильтрацией по hotel_id
+	roomsFiltered, err := service.GetRooms(hotel1)
+	if err != nil {
+		t.Fatalf("Failed to get rooms with filter: %v", err)
+	}
+	if len(roomsFiltered) != 2 {
+		t.Fatalf("Expected 2 rooms for hotel 1, got %d", len(roomsFiltered))
+	}
+}

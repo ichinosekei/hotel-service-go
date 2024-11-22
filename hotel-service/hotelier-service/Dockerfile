@@ -12,7 +12,7 @@ RUN go mod download
 COPY . .
 
 # Проверка существования директории configs
-RUN ls -l /app/configs
+RUN #ls -l /app/configs
 
 # Проверка структуры исходного кода
 # RUN ls -l /app/cmd/hotelier-service
@@ -27,7 +27,7 @@ WORKDIR /root
 # Копируем исполняемый файл из стадии сборки
 COPY --from=builder /app/hotelier-service .
 # Копируем конфигурацию
-COPY configs/hotelier-config.yaml ./config.yaml
+COPY hotel-service/configs/hotelier-config.yaml ./config.yaml
 # Устанавливаем права на выполнение для бинарного файла
 RUN chmod +x ./hotelier-service
 
