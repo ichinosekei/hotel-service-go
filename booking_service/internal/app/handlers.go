@@ -4,7 +4,7 @@ import (
 	openapitypes "github.com/oapi-codegen/runtime/types"
 	"net/http"
 
-	"booking_service/internal/db"
+	"github.com/ichinosekei/hotel-service-go/tree/dfsavffc/internal/db"
 	"github.com/labstack/echo/v4"
 )
 

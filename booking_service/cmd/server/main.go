@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"booking_service/internal/app"
-	"booking_service/internal/db"
+	"github.com/ichinosekei/hotel-service-go/tree/dfsavffc/internal/app"
+	"github.com/ichinosekei/hotel-service-go/tree/dfsavffc/internal/db"
 	"github.com/labstack/echo/v4"
 )
 
