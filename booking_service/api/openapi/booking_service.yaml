@@ -46,7 +46,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateBookingRequest'
+              $ref: '#/components/schemas/BookingRequest'
       responses:
         '201':
           description: Booking successfully created.
@@ -103,9 +103,9 @@ components:
         duration:
           type: integer
           description: Duration of the booking in nights.
-        hotelName:
-          type: string
-          description: Name of the hotel.
+        hotelId:
+          type: integer
+          description: id of the hotel.
         roomNumber:
           type: string
           description: Room number in the hotel.
@@ -120,14 +120,14 @@ components:
           type: string
           description: Phone number of the client.
 
-    CreateBookingRequest:
+    BookingRequest:
       type: object
       properties:
-        hotelName:
-          type: string
-          description: Name of the hotel.
+        hotelId:
+          type: integer
+          description: Id of the hotel.
         roomNumber:
-          type: string
+          type: integer
           description: Room number in the hotel.
         checkInDate:
           type: string
