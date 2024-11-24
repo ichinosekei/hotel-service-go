@@ -1,13 +1,26 @@
-package main
+package api
 
 import (
 	"encoding/json"
 	"errors"
 	"github.com/gorilla/mux"
+	"go.opentelemetry.io/otel/trace"
+	"hotel-service-go/hotelier-service/internal/pkg/repository"
 	"log"
 	"net/http"
 	"strconv"
 )
+
+// APIHandler  обработчик API, содержащий зависимости для передачи из main
+type APIHandler struct {
+	service *repository.Service
+	tracer  trace.Tracer
+}
+
+// Создаёт новый APIHandler
+func NewAPIHandler(service *repository.Service, tracer trace.Tracer) *APIHandler {
+	return &APIHandler{service: service, tracer: tracer}
+}
 
 // Универсальная функция для обработки ошибок
 func handleError(w http.ResponseWriter, statusCode int, err error) {
@@ -17,8 +30,8 @@ func handleError(w http.ResponseWriter, statusCode int, err error) {
 
 // Обработчики для работы с отелями
 
-func CreateHotelHandler(w http.ResponseWriter, r *http.Request) {
-	_, span := tracer.Start(r.Context(), "CreateHotelHandler")
+func (h *APIHandler) CreateHotelHandler(w http.ResponseWriter, r *http.Request) {
+	_, span := h.tracer.Start(r.Context(), "CreateHotelHandler")
 	defer span.End()
 
 	var data struct {
@@ -30,7 +43,7 @@ func CreateHotelHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := service.CreateHotel(data.Name, data.Location)
+	id, err := h.service.CreateHotel(data.Name, data.Location)
 	if err != nil {
 		handleError(w, http.StatusInternalServerError, err)
 		return
@@ -41,12 +54,12 @@ func CreateHotelHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]int{"id": id})
 }
 
-func GetHotelsHandler(w http.ResponseWriter, r *http.Request) {
-	_, span := tracer.Start(r.Context(), "GetHotelsHandler")
+func (h *APIHandler) GetHotelsHandler(w http.ResponseWriter, r *http.Request) {
+	_, span := h.tracer.Start(r.Context(), "GetHotelsHandler")
 	defer span.End()
 
 	location := r.URL.Query().Get("location")
-	hotels, err := service.GetHotels(location)
+	hotels, err := h.service.GetHotels(location)
 	if err != nil {
 		handleError(w, http.StatusInternalServerError, err)
 		return
@@ -56,8 +69,8 @@ func GetHotelsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(hotels)
 }
 
-func UpdateHotelHandler(w http.ResponseWriter, r *http.Request) {
-	_, span := tracer.Start(r.Context(), "UpdateHotelHandler")
+func (h *APIHandler) UpdateHotelHandler(w http.ResponseWriter, r *http.Request) {
+	_, span := h.tracer.Start(r.Context(), "UpdateHotelHandler")
 	defer span.End()
 
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
@@ -70,7 +83,7 @@ func UpdateHotelHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := service.UpdateHotel(id, data.Name, data.Location); err != nil {
+	if err := h.service.UpdateHotel(id, data.Name, data.Location); err != nil {
 		http.Error(w, "Hotel not found", http.StatusNotFound)
 		return
 	}
@@ -79,12 +92,12 @@ func UpdateHotelHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func DeleteHotelHandler(w http.ResponseWriter, r *http.Request) {
-	_, span := tracer.Start(r.Context(), "DeleteHotelHandler")
+func (h *APIHandler) DeleteHotelHandler(w http.ResponseWriter, r *http.Request) {
+	_, span := h.tracer.Start(r.Context(), "DeleteHotelHandler")
 	defer span.End()
 
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
-	if err := service.DeleteHotel(id); err != nil {
+	if err := h.service.DeleteHotel(id); err != nil {
 		http.Error(w, "Hotel not found", http.StatusNotFound)
 		return
 	}
@@ -95,8 +108,8 @@ func DeleteHotelHandler(w http.ResponseWriter, r *http.Request) {
 
 // Обработчики для работы с комнатами
 
-func CreateRoomHandler(w http.ResponseWriter, r *http.Request) {
-	_, span := tracer.Start(r.Context(), "CreateRoomHandler")
+func (h *APIHandler) CreateRoomHandler(w http.ResponseWriter, r *http.Request) {
+	_, span := h.tracer.Start(r.Context(), "CreateRoomHandler")
 	defer span.End()
 
 	var data struct {
@@ -109,7 +122,7 @@ func CreateRoomHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//////////dsafsdfasfsdafsdf
-	id, err := service.CreateRoom(data.HotelID, data.RoomNumber, data.Price)
+	id, err := h.service.CreateRoom(data.HotelID, data.RoomNumber, data.Price)
 	if err != nil {
 		if err.Error() == "hotel not found" {
 			handleError(w, http.StatusBadRequest, errors.New("hotel with the given ID does not exist"))
@@ -124,8 +137,8 @@ func CreateRoomHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]int{"id": id})
 }
 
-func UpdateRoomHandler(w http.ResponseWriter, r *http.Request) {
-	_, span := tracer.Start(r.Context(), "UpdateRoomHandler")
+func (h *APIHandler) UpdateRoomHandler(w http.ResponseWriter, r *http.Request) {
+	_, span := h.tracer.Start(r.Context(), "UpdateRoomHandler")
 	defer span.End()
 
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
@@ -138,7 +151,7 @@ func UpdateRoomHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := service.UpdateRoom(id, data.RoomNumber, data.Price); err != nil {
+	if err := h.service.UpdateRoom(id, data.RoomNumber, data.Price); err != nil {
 		http.Error(w, "Room not found", http.StatusNotFound)
 		return
 	}
@@ -147,12 +160,12 @@ func UpdateRoomHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func DeleteRoomHandler(w http.ResponseWriter, r *http.Request) {
-	_, span := tracer.Start(r.Context(), "DeleteRoomHandler")
+func (h *APIHandler) DeleteRoomHandler(w http.ResponseWriter, r *http.Request) {
+	_, span := h.tracer.Start(r.Context(), "DeleteRoomHandler")
 	defer span.End()
 
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
-	if err := service.DeleteRoom(id); err != nil {
+	if err := h.service.DeleteRoom(id); err != nil {
 		http.Error(w, "Room not found", http.StatusNotFound)
 		return
 	}
@@ -161,9 +174,9 @@ func DeleteRoomHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func GetRoomsHandler(w http.ResponseWriter, r *http.Request) {
+func (h *APIHandler) GetRoomsHandler(w http.ResponseWriter, r *http.Request) {
 	// Начинаем span для трассировки
-	_, span := tracer.Start(r.Context(), "GetRoomsHandler")
+	_, span := h.tracer.Start(r.Context(), "GetRoomsHandler")
 	defer span.End()
 
 	// Получаем параметр `hotel_id` из строки запроса
@@ -179,7 +192,7 @@ func GetRoomsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Получаем список комнат
-	rooms, err := service.GetRooms(hotelID)
+	rooms, err := h.service.GetRooms(hotelID)
 	if err != nil {
 		http.Error(w, "Failed to retrieve rooms", http.StatusInternalServerError)
 		return

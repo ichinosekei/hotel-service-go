@@ -1,4 +1,4 @@
-package hotelier
+package repository
 
 import (
 	"database/sql"
