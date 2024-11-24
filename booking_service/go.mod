@@ -1,4 +1,4 @@
-module github.com/ichinosekei/hotel-service-go/tree/dfsavffc
+module booking_service
 
 go 1.23.2
 
