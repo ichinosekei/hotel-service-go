@@ -1,17 +1,17 @@
 package main
 
 import (
-	"log"
+	"google.golang.org/grpc"
+	"hotelier-service/internal/pkg/api"
+	"hotelier-service/internal/pkg/proto"
+	"hotelier-service/internal/pkg/repository"
+	_ "log"
 	"net"
 	_ "net/url"
-     "hotel-service-go/hotelier-service/internal/pkg/repository"
-	"google.golang.org/grpc"
-	"hotel-service-go/hotelier-service/internal/pkg/api"
-	"hotel-service-go/hotelier-service/internal/pkg/proto"
 )
 
-func startGRPCServer(service *repository.Service) (*grpc.Server, net.Listener, error){
-	lis, err := net.Listen("tcp", ":50051")// Порт gRPC сервера
+func startGRPCServer(service *repository.Service) (*grpc.Server, net.Listener, error) {
+	lis, err := net.Listen("tcp", ":50051") // Порт gRPC сервера
 	if err != nil {
 		return nil, nil, err
 	}
@@ -27,4 +27,3 @@ func startGRPCServer(service *repository.Service) (*grpc.Server, net.Listener, e
 	//}
 	return grpcServer, lis, err
 }
-

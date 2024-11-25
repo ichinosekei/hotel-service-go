@@ -2,23 +2,34 @@
 FROM golang:1.23 AS builder
 
 
-WORKDIR /app
+WORKDIR /app/hotelier-service
 
 # Copy and download dependencies
-COPY go.mod go.sum ./
+COPY hotelier-service/go.mod hotelier-service/go.sum ./
+
 RUN go mod download
 
 # Copy the source code
+WORKDIR /app
 COPY . .
 
-# Проверка существования директории configs
-RUN #ls -l /app/configs
+# Перейти в директорию, где находится main.go
+WORKDIR /app/hotelier-service/hotelier-service
 
-# Проверка структуры исходного кода
-# RUN ls -l /app/cmd/hotelier-service
+## Проверка существования директории configs
+#RUN #ls -l /app/configs
+#
+## Проверка структуры исходного кода
+## RUN ls -l /app/cmd/hotelier-service
+## Проверяем структуру папок (отладка)
+#RUN ls -l /app/hotelier-service
+#RUN ls -l /app/hotelier-service/cmd
+
+
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o hotelier-service-bin ./hotelier-service/hotelier-service
+#WORKDIR /app/hotelier-service
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /app/hotelier-service-bin .
 
 # Stage 2 - Run
 FROM alpine:latest

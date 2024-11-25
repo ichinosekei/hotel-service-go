@@ -2,10 +2,11 @@ package api
 
 import (
 	"context"
+	"hotelier-service/internal/pkg/proto"
+	"hotelier-service/internal/pkg/repository"
 	"log"
-	"hotel-service-go/hotelier-service/internal/pkg/proto"
-	"hotel-service-go/hotelier-service/internal/pkg/repository"
 )
+
 type HotelierServer struct {
 	proto.UnimplementedHotelierServiceServer
 	Service *repository.Service

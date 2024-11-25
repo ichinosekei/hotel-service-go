@@ -7,18 +7,18 @@ import (
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"go.opentelemetry.io/otel/trace"
-	"hotel-service-go/hotelier-service/internal/pkg/api"
-	"hotel-service-go/hotelier-service/internal/pkg/repository"
-	"hotel-service-go/hotelier-service/internal/pkg/tracing"
+	"google.golang.org/grpc"
+	"hotelier-service/internal/pkg/api"
+	"hotelier-service/internal/pkg/repository"
+	"hotelier-service/internal/pkg/tracing"
 	"log"
+	"net"
 	"net/http"
 	_ "net/url"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
-	"net"
-	"google.golang.org/grpc"
 )
 
 // Переменные для сервиса и трассировки
@@ -74,7 +74,7 @@ func main() {
 		Handler: r,
 	}
 
-	grpcServer,grpcListener, err := startGRPCServer(service)
+	grpcServer, grpcListener, err := startGRPCServer(service)
 	if err != nil {
 		log.Printf("Error starting gRPC server: %v", err)
 		cleanup()
@@ -82,7 +82,7 @@ func main() {
 	}
 
 	// Запуск сервера с graceful shutdown
-	GracefulShutdown(server, grpcServer,grpcListener,cleanup)
+	GracefulShutdown(server, grpcServer, grpcListener, cleanup)
 }
 
 // Устанавливаем подключение к базе данных
@@ -108,7 +108,6 @@ func (db DatabaseConfig) ConnectionString() string {
 		" dbname=" + db.DBName +
 		" sslmode=" + db.SSLMode
 }
-
 
 // Graceful shutdown для HTTP и gRPC серверов
 func GracefulShutdown(httpServer *http.Server, grpcServer *grpc.Server, grpcListener net.Listener, cleanup func()) {

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/gorilla/mux"
 	"go.opentelemetry.io/otel/trace"
-	"hotel-service-go/hotelier-service/internal/pkg/repository"
+	"hotelier-service/internal/pkg/repository"
 	"log"
 	"net/http"
 	"strconv"
