@@ -165,6 +165,24 @@ func (s *Service) GetHotels(location string) ([]Hotel, error) {
 	return hotels, nil
 }
 
+// GetRoomPrice возврашает стоимость комнаты по id hotel и номера комнаты
+func (s *Service) GetRoomPrice(hotelID int32, roomNumber string) (float64, error) {
+	var price float64
+	query := "SELECT price FROM Rooms WHERE hotel_id = $1 AND room_number = $2"
+	err := s.Db.QueryRow(query, hotelID, roomNumber).Scan(&price)
+	if err != nil {
+		return 0, fmt.Errorf("room not found: %v", err)
+	}
+	return price, nil
+}
+
+
+
+
+
+
+
+
 func (s *Service) InitializeDatabase() error {
 	if s.Db == nil {
 		return fmt.Errorf("database connection is not initialized")
@@ -184,3 +202,4 @@ func (s *Service) InitializeDatabase() error {
     `)
 	return err
 }
+

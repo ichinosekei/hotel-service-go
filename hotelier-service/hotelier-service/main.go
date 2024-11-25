@@ -17,6 +17,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"net"
+	"google.golang.org/grpc"
 )
 
 // Переменные для сервиса и трассировки
@@ -71,8 +73,12 @@ func main() {
 		Addr:    ":" + config.Server.Port,
 		Handler: r,
 	}
+
+	grpcServer,grpcListener := startGRPCServer(service)
+
+
 	// Запуск сервера с graceful shutdown
-	GracefulShutdown(server, cleanup)
+	GracefulShutdown(server, grpcServer,grpcListener,cleanup)
 }
 
 // Устанавливаем подключение к базе данных
@@ -99,33 +105,47 @@ func (db DatabaseConfig) ConnectionString() string {
 		" sslmode=" + db.SSLMode
 }
 
-// Функция для запуска сервера с graceful shutdown
-func GracefulShutdown(server *http.Server, cleanup func()) {
+
+// Graceful shutdown для HTTP и gRPC серверов
+func GracefulShutdown(httpServer *http.Server, grpcServer *grpc.Server, grpcListener net.Listener, cleanup func()) {
 	// Канал для получения сигналов завершения
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
-	// Запускаем сервер в отдельной горутине
+	// Запускаем HTTP сервер в отдельной горутине
 	go func() {
-		log.Printf("Starting hotelier-server on %s", server.Addr)
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("Failed to start hotelier-server: %v", err)
+		log.Printf("Starting HTTP hotelier-server on %s", httpServer.Addr)
+		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Failed to start HTTP hotelier-server: %v", err)
+		}
+	}()
+
+	// Запуск gRPC сервера в отдельной горутине
+	go func() {
+		log.Println("Starting gRPC server on :50051")
+		if err := grpcServer.Serve(grpcListener); err != nil {
+			log.Fatalf("gRPC server error: %v", err)
 		}
 	}()
 
 	// Ожидаем сигнал завершения
 	<-stop
-	log.Println("Shutting down hotelier-server...")
+	log.Println("Shutting down hotelier-servers...")
 
 	// Создаем контекст с таймаутом
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	// Завершаем сервер
-	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("Hotelier-server forced to shutdown: %v", err)
+	// Завершаем HTTP сервер
+	if err := httpServer.Shutdown(ctx); err != nil {
+		log.Fatalf("HTTP Hotelier-server forced to shutdown: %v", err)
 	}
-	// закрываем базы данных
+
+	// Завершаем gRPC сервер
+	grpcServer.GracefulStop()
+	grpcListener.Close()
+
+	// Закрываем базу данных
 	cleanup()
 
 	log.Println("Hotelier-server exited gracefully")
