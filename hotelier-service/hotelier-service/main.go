@@ -74,8 +74,12 @@ func main() {
 		Handler: r,
 	}
 
-	grpcServer,grpcListener := startGRPCServer(service)
-
+	grpcServer,grpcListener, err := startGRPCServer(service)
+	if err != nil {
+		log.Printf("Error starting gRPC server: %v", err)
+		cleanup()
+		os.Exit(1) // Завершаем программу
+	}
 
 	// Запуск сервера с graceful shutdown
 	GracefulShutdown(server, grpcServer,grpcListener,cleanup)

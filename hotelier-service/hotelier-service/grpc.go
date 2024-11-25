@@ -10,10 +10,10 @@ import (
 	"hotel-service-go/hotelier-service/internal/pkg/proto"
 )
 
-func startGRPCServer(service *repository.Service) (*grpc.Server, net.Listener){
+func startGRPCServer(service *repository.Service) (*grpc.Server, net.Listener, error){
 	lis, err := net.Listen("tcp", ":50051")// Порт gRPC сервера
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		return nil, nil, err
 	}
 	// Создаем gRPC сервер
 	grpcServer := grpc.NewServer()
@@ -25,6 +25,6 @@ func startGRPCServer(service *repository.Service) (*grpc.Server, net.Listener){
 	//if err := grpcServer.Serve(lis); err != nil {
 	//	log.Fatalf("failed to serve: %v", err)
 	//}
-	return grpcServer, lis
+	return grpcServer, lis, err
 }
 
