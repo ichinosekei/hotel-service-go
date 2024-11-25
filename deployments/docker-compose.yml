@@ -4,7 +4,7 @@ services:
     build:
       #context: D:\hotel-service-go
       context: ..
-      dockerfile: /hotel-service/hotelier-service/Dockerfile
+      dockerfile: /hotelier-service/hotelier-service/Dockerfile
     ports:
       - "8080:8080"
     volumes:

@@ -1,18 +1,23 @@
-package hotelier
+package repository
 
 import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/lib/pq"
 	"log"
 )
 
 type Service struct {
 	Db *sql.DB
+	//Tracer trace.Tracer
 }
 
 func NewService(db *sql.DB) *Service {
-	return &Service{Db: db}
+	return &Service{
+		Db: db,
+		//Tracer: otel.Tracer("hotelier-service"),
+	}
 }
 
 type Hotel struct {
@@ -73,7 +78,11 @@ func (s *Service) CreateRoom(hotelID int, roomNumber string, price float64) (int
 	var id int
 	err := s.Db.QueryRow("INSERT INTO Rooms (hotel_id, room_number, price) VALUES ($1, $2, $3) RETURNING id", hotelID, roomNumber, price).Scan(&id)
 	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code.Name() == "foreign_key_violation" {
+			return 0, errors.New("hotel not found")
+		}
 		return 0, err
+
 	}
 	return id, nil
 }
