@@ -5,25 +5,36 @@ import (
 	"booking_service/internal/pkg/config"
 	"booking_service/internal/pkg/persistent/repository"
 	"booking_service/internal/pkg/persistent/server"
+	"github.com/joho/godotenv"
 	"log"
+	"os"
 )
 
 func main() {
-	srv_cfg := server.Config{
-		URL: ":8080",
+	if err := godotenv.Load(".env.dev"); err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	database_cfg := repository.Config{
-		DSN: "host=localhost user=booking_user password=booking_password dbname=booking_db port=5432 sslmode=disable",
+	ServerConfig := server.Config{
+		PORT: ":" + os.Getenv("SERVER_PORT"),
 	}
 
-	cfg := config.Config{
-		database_cfg,
-		srv_cfg,
+	DataBaseConfig := repository.Config{
+		DSN: "host=" + os.Getenv("DB_HOST") +
+			" user=" + os.Getenv("DB_USER") +
+			" password=" + os.Getenv("DB_PASSWORD") +
+			" dbname=" + os.Getenv("DB_NAME") +
+			" port=" + os.Getenv("DB_PORT") +
+			" sslmode=disable",
+	}
+
+	ServiceConfig := config.Config{
+		Database: DataBaseConfig,
+		Server:   ServerConfig,
 	}
 
 	service := app.NewBookingService()
-	err := service.Init(cfg)
+	err := service.Init(ServiceConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,5 +42,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Server is running on port 8080")
 }

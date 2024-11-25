@@ -3,23 +3,23 @@ package server
 import (
 	"booking_service/internal/app/server_gen"
 	"booking_service/internal/pkg/persistent/repository"
-	"fmt"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 func (s *BookingServer) PostApiV1Bookings(ctx echo.Context) error {
-	fmt.Println("PostApiV1Bookings called")
 	var request server_gen.BookingRequest
 
 	if err := ctx.Bind(&request); err != nil {
-		fmt.Println("Error parsing request:", err)
 		return ctx.JSON(http.StatusBadRequest, err)
 	}
-	fmt.Println("Parsed request:")
+
 	booking := repository.LoadBookingRequest(request)
-	booking.ID = 100
+	booking.ID = uuid.NewString()
+	// TODO implement a grpc request to the hotel service
 	booking.TotalPrice = 0
+
 	if err := s.repo.Create(booking); err != nil {
 		return ctx.JSON(http.StatusInternalServerError, err)
 	}

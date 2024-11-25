@@ -3,7 +3,7 @@ package repository
 import "time"
 
 type Booking struct {
-	ID                int       `gorm:"primaryKey"`
+	ID                string    `gorm:"primaryKey"`
 	CheckInDate       time.Time `gorm:"not null"`
 	ClientFullName    string    `gorm:"not null"`
 	ClientPhoneNumber string    `gorm:"not null"`

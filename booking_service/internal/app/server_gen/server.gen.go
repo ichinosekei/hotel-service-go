@@ -22,7 +22,7 @@ import (
 // Booking defines model for Booking.
 type Booking struct {
 	// BookingId Unique ID of the booking.
-	BookingId *int `json:"bookingId,omitempty"`
+	BookingId *string `json:"bookingId,omitempty"`
 
 	// CheckInDate Check-in date of the booking.
 	CheckInDate *openapi_types.Date `json:"checkInDate,omitempty"`
@@ -184,20 +184,20 @@ var swaggerSpec = []string{
 
 	"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",
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

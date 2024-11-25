@@ -9,7 +9,7 @@ import (
 type BookingServer struct {
 	repo app.Repository
 	echo *echo.Echo
-	URL  string
+	PORT string
 }
 
 func NewBookingServer(repo app.Repository) *BookingServer {
@@ -18,11 +18,11 @@ func NewBookingServer(repo app.Repository) *BookingServer {
 
 func (s *BookingServer) Init(cfg Config) {
 	s.echo = echo.New()
-	s.URL = cfg.URL
+	s.PORT = cfg.PORT
 	server_gen.RegisterHandlers(s.echo, s)
 }
 
 func (s *BookingServer) Run() error {
-	err := s.echo.Start(s.URL)
+	err := s.echo.Start(s.PORT)
 	return err
 }

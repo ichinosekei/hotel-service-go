@@ -94,7 +94,7 @@ components:
       type: object
       properties:
         bookingId:
-          type: integer
+          type: string
           description: Unique ID of the booking.
         checkInDate:
           type: string
