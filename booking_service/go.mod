@@ -11,7 +11,7 @@ require (
 	google.golang.org/grpc v1.68.0
 	gorm.io/driver/postgres v1.5.10
 	gorm.io/gorm v1.25.12
-	//github.com/ichinosekei/hotel-service-go/hotelier-service vX.X.X
+	github.com/ichinosekei/hotel-service-go/hotelier-service v1.0.0-testing-branch
 )
 
 require (
