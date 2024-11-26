@@ -86,3 +86,4 @@ http://localhost:8080/rooms
 }
 ```
 ## подробнее в hotel-service/api/openapi
+рг
