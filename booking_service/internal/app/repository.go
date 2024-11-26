@@ -1,11 +1,12 @@
 package app
 
 import (
-	"booking_service/internal/pkg/persistent/repository"
+	"booking_service/pkg/api/v1"
+	"booking_service/pkg/models"
 )
 
 type Repository interface {
-	Create(*repository.Booking) error
-	GetClient(string) (repository.Bookings, error)
-	GetHotel(int) (repository.Bookings, error)
+	Create(*api.BookingRequest) error
+	GetClient(string) (*models.Bookings, error)
+	GetHotel(int) (*models.Bookings, error)
 }

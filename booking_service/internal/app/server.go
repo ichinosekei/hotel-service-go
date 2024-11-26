@@ -1,12 +1,12 @@
 package app
 
 import (
-	"booking_service/internal/app/server_gen"
+	"booking_service/pkg/api/v1"
 	"context"
 )
 
 type Server interface {
-	server_gen.ServerInterface
+	api.ServerInterface
 	Run() error
 	Shutdown(ctx context.Context) error
 }
