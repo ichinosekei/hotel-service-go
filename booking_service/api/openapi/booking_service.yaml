@@ -98,7 +98,6 @@ components:
           description: Unique ID of the booking.
         checkInDate:
           type: string
-          format: date
           description: Check-in date of the booking.
         duration:
           type: integer
@@ -107,7 +106,7 @@ components:
           type: integer
           description: id of the hotel.
         roomNumber:
-          type: string
+          type: integer
           description: Room number in the hotel.
         totalPrice:
           type: number
@@ -131,7 +130,6 @@ components:
           description: Room number in the hotel.
         checkInDate:
           type: string
-          format: date
           description: Check-in date of the booking.
         duration:
           type: integer

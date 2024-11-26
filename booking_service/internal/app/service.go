@@ -1,23 +1,28 @@
 package app
 
-import "context"
+import (
+	"booking_service/pkg/api/v1"
+	"booking_service/pkg/models"
+)
 
 type Service struct {
-	server Server
-	repo   Repository
+	repo Repository
 }
 
-func NewService(srv Server, repo Repository) *Service {
+func NewService(repo Repository) *Service {
 	return &Service{
-		server: srv,
-		repo:   repo,
+		repo: repo,
 	}
 }
 
-func (s *Service) Run() error {
-	return s.server.Run()
+func (s *Service) GetClient(phoneNumber string) (*models.Bookings, error) {
+	return s.repo.GetClient(phoneNumber)
 }
 
-func (s *Service) Shutdown(ctx context.Context) error {
-	return s.server.Shutdown(ctx)
+func (s *Service) CreateClient(bookingRequest *api.BookingRequest) error {
+	return s.repo.Create(bookingRequest)
+}
+
+func (s *Service) GetHotel(hotelId int) (*models.Bookings, error) {
+	return s.repo.GetHotel(hotelId)
 }

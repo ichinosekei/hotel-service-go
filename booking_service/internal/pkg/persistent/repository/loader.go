@@ -1,12 +1,12 @@
 package repository
 
 import (
-	"booking_service/internal/app/server_gen"
+	"booking_service/pkg/api/v1"
 )
 
-func LoadBookingRequest(req server_gen.BookingRequest) *Booking {
+func LoadBookingRequest(req *api.BookingRequest) *Booking {
 	return &Booking{
-		CheckInDate:       req.CheckInDate.Time,
+		CheckInDate:       *req.CheckInDate,
 		ClientFullName:    *req.ClientFullName,
 		ClientPhoneNumber: *req.ClientPhoneNumber,
 		Duration:          *req.Duration,

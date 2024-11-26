@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"booking_service/pkg/api/v1"
+	"booking_service/pkg/models"
+	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -32,26 +35,39 @@ func (repo *Repository) Init(cfg Config) error {
 	return nil
 }
 
-func (repo *Repository) Create(booking *Booking) error {
+func (repo *Repository) Create(bookingRequest *api.BookingRequest) error {
+	booking := LoadBookingRequest(bookingRequest)
+	booking.BookingId = uuid.NewString()
+	// TODO implement a grpc request to the hotel service
+	booking.TotalPrice = 0
+
 	err := repo.database.Create(booking).Error
 	if err != nil {
 		log.Fatalf("Failed to create booking in data base: %v", err)
 	}
 	return err
 }
-func (repo *Repository) GetClient(phoneNumber string) (Bookings, error) {
+func (repo *Repository) GetClient(phoneNumber string) (*models.Bookings, error) {
 	var bookings Bookings
-	err := repo.database.Where("client_phone_number = ?", phoneNumber).First(&bookings).Error
+	err := repo.database.Where("client_phone_number = ?", phoneNumber).Find(&bookings).Error
 	if err != nil {
 		log.Printf("Error getting from data base: %v", err)
 	}
-	return bookings, err
+	var modelsBookings models.Bookings
+	for _, booking := range bookings {
+		modelsBookings = append(modelsBookings, *toModelsBooking(&booking))
+	}
+	return &modelsBookings, err
 }
-func (repo *Repository) GetHotel(id int) (Bookings, error) {
+func (repo *Repository) GetHotel(id int) (*models.Bookings, error) {
 	var bookings Bookings
-	err := repo.database.Where("hotel_id = ?", id).First(&bookings).Error
+	err := repo.database.Where("hotel_id = ?", id).Find(&bookings).Error
 	if err != nil {
 		log.Printf("Error getting from data base: %v", err)
 	}
-	return bookings, err
+	var modelsBookings models.Bookings
+	for _, booking := range bookings {
+		modelsBookings = append(modelsBookings, *toModelsBooking(&booking))
+	}
+	return &modelsBookings, err
 }
