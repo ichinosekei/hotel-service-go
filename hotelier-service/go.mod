@@ -1,4 +1,4 @@
-module hotelier-service
+module github.com/ichinosekei/hotel-service-go/hotelier-service
 
 go 1.23
 

@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/api"
+	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/proto"
+	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/repository"
 	"google.golang.org/grpc"
-	"hotelier-service/internal/pkg/api"
-	"hotelier-service/internal/pkg/proto"
-	"hotelier-service/internal/pkg/repository"
 	_ "log"
 	"net"
 	_ "net/url"
