@@ -49,7 +49,7 @@ func (repo *Repository) Create(bookingRequest *api.BookingRequest) error {
 }
 func (repo *Repository) GetClient(phoneNumber string) (*models.Bookings, error) {
 	var bookings Bookings
-	err := repo.database.Where("client_phone_number = ?", phoneNumber).First(&bookings).Error
+	err := repo.database.Where("client_phone_number = ?", phoneNumber).Find(&bookings).Error
 	if err != nil {
 		log.Printf("Error getting from data base: %v", err)
 	}
@@ -61,7 +61,7 @@ func (repo *Repository) GetClient(phoneNumber string) (*models.Bookings, error) 
 }
 func (repo *Repository) GetHotel(id int) (*models.Bookings, error) {
 	var bookings Bookings
-	err := repo.database.Where("hotel_id = ?", id).First(&bookings).Error
+	err := repo.database.Where("hotel_id = ?", id).Find(&bookings).Error
 	if err != nil {
 		log.Printf("Error getting from data base: %v", err)
 	}
