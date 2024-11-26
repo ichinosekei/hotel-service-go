@@ -20,7 +20,12 @@ func (s *BookingServer) PostApiV1Bookings(ctx echo.Context) error {
 	booking := repository.LoadBookingRequest(request)
 	booking.ID = uuid.NewString()
 	// TODO implement a grpc request to the hotel service
-	booking.TotalPrice = 0
+	log.Printf("Room price: %f")
+	booking.TotalPrice, err := hotelierClient.GetRoomPrice(1, "101")
+	if err != nil {
+		log.Fatalf("Failed to get room price: %v", err)
+	}
+	//log.Printf("Room price: %f", price)
 
 	if err := s.repo.Create(booking); err != nil {
 		log.Printf("Error creating booking: %v\n", err)
