@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="70a90a85-3db2-4756-8676-a965fc1ffa26" name="Changes" comment="Booking Service REBORN" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file://$USER_HOME$/Downloads/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="dfsavffc" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;dfsavffc&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ichinosekei/hotel-service-go&quot;,
+    &quot;accountId&quot;: &quot;5fab3a76-cf89-404e-aafe-5b5de2958f39&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2ouH9NYSR9vNUXEYHLVgLWpYK2C" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "Go Build.go build booking_service.executor": "Run",
+    "Go Build.go build booking_service/cmd/booking_service.executor": "Run",
+    "Go Build.go build booking_service/cmd/server.executor": "Run",
+    "Go Build.go build cmd/.executor": "Run",
+    "Go Build.go build github.com/ichinosekei/hotel-service-go/tree/dfsavffc/cmd/server.executor": "Run",
+    "Go Build.go build hotel-service-go main.go.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "main",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/Users/Dfsavffc/Programming/Go/hotel-service-go",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/hotel_service" />
+      <recent name="$PROJECT_DIR$/delivery_system" />
+      <recent name="$PROJECT_DIR$/booking_service" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/booking_service/internal/pkg/persistent/repository" />
+      <recent name="$PROJECT_DIR$/booking_service/internal/pkg/api" />
+      <recent name="$PROJECT_DIR$/booking_service/internal/pkg/persistent/repository/config" />
+      <recent name="$PROJECT_DIR$/booking_service/internal/pkg/api/config" />
+      <recent name="$PROJECT_DIR$/booking_service/internal/pkg/config" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="go build booking_service/cmd/booking_service" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+      <module name="hotel-service-go" />
+      <working_directory value="$PROJECT_DIR$/booking_service" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$/booking_service/cmd/booking_service" />
+      <filePath value="$PROJECT_DIR$/../hotel-service-go|$PROJECT_DIR$/booking_service/cmd/server/main.go" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-5df93f7ad4aa-df9ad98b711f-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-242.21829.220" />
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-GO-242.21829.220" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="initial" />
+    <MESSAGE value="fixing imports" />
+    <MESSAGE value="Refactor structure of the service and make first working version" />
+    <MESSAGE value="Add env and uuid generation" />
+    <MESSAGE value="Add logging and graceful shutdown" />
+    <MESSAGE value="Fix project structure" />
+    <MESSAGE value="Fix get from db" />
+    <MESSAGE value="Fix" />
+    <MESSAGE value="Booking Service REBORN" />
+    <option name="LAST_COMMIT_MESSAGE" value="Booking Service REBORN" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>
