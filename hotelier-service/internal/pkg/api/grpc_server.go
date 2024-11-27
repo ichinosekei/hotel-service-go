@@ -2,7 +2,7 @@ package api
 
 import (
 	"context"
-	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/proto"
+	"github.com/ichinosekei/hotel-service-go/hotelier-service/proto"
 	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/repository"
 	"log"
 )

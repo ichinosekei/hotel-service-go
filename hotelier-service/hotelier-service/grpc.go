@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/api"
-	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/proto"
+	"github.com/ichinosekei/hotel-service-go/hotelier-service/proto"
 	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/repository"
 	"google.golang.org/grpc"
 	_ "log"
