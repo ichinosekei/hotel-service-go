@@ -1,4 +1,4 @@
-package hotel_client
+package clients
 
 import (
 	"context"

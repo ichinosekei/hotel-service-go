@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"booking_service/internal/pkg/hotel_client"
+	"booking_service/internal/pkg/clients"
 	"booking_service/pkg/api/v1"
 	"booking_service/pkg/models"
 	"fmt"
@@ -46,7 +46,7 @@ func (repo *Repository) Create(bookingRequest *api.BookingRequest) error {
 	}
 	booking.BookingId = uuid.NewString()
 
-	hotelierClient, err := hotel_client.NewHotelClient("")
+	hotelierClient, err := clients.NewHotelClient("")
 	if err != nil {
 		log.Printf("Failed to create hoteler client: %v", err)
 		return err
