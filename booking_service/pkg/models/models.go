@@ -1,5 +1,27 @@
 package models
 
-import "booking_service/pkg/api/v1"
+import (
+	"time"
+)
 
-type Bookings []api.Booking
+type Booking struct {
+	BookingId         string
+	CheckInDate       time.Time
+	CheckOutDate      time.Time
+	ClientFullName    string
+	ClientPhoneNumber string
+	HotelId           int
+	RoomNumber        int
+	TotalPrice        float64
+}
+
+type BookingRequest struct {
+	CheckInDate       time.Time
+	CheckOutDate      time.Time
+	ClientFullName    string
+	ClientPhoneNumber string
+	HotelId           int
+	RoomNumber        int
+}
+
+type Bookings []Booking

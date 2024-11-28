@@ -2,7 +2,6 @@ package repository
 
 import (
 	"booking_service/internal/pkg/clients"
-	"booking_service/pkg/api/v1"
 	"booking_service/pkg/models"
 	"fmt"
 	"github.com/google/uuid"
@@ -37,13 +36,8 @@ func (repo *Repository) Init(cfg Config) error {
 	return nil
 }
 
-func (repo *Repository) Create(bookingRequest *api.BookingRequest) error {
-	booking, err := LoadBookingRequest(bookingRequest)
-
-	if err != nil {
-		log.Printf("Failed to create booking request: %v", err)
-		return err
-	}
+func (repo *Repository) Create(bookingRequest *models.BookingRequest) error {
+	booking := LoadBookingRequest(bookingRequest)
 	booking.BookingId = uuid.NewString()
 
 	hotelierClient, err := clients.NewHotelClient("")

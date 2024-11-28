@@ -14,8 +14,12 @@ func (s *BookingServer) PostApiV1Bookings(ctx echo.Context) error {
 		log.Printf("Error binding bookings request: %v\n", err)
 		return ctx.JSON(http.StatusBadRequest, err)
 	}
-
-	if err := s.bookingService.Service.CreateClient(&bookingRequest); err != nil {
+	modelRequest, err := fromApiBookingRequest(&bookingRequest)
+	if err != nil {
+		log.Printf("Error binding bookings request: %v\n", err)
+		return ctx.JSON(http.StatusBadRequest, err)
+	}
+	if err := s.bookingService.Service.CreateClient(modelRequest); err != nil {
 		log.Printf("Error creating booking: %v\n", err)
 		return ctx.JSON(http.StatusInternalServerError, err)
 	}
@@ -29,7 +33,12 @@ func (s *BookingServer) GetApiV1BookingsClient(ctx echo.Context, params api.GetA
 		log.Printf("Error getting bookings: %v\n", err)
 		return ctx.JSON(http.StatusInternalServerError, err)
 	}
-	return ctx.JSON(http.StatusOK, bookings)
+	var apiBookings []api.Booking
+	for _, booking := range *bookings {
+		apiBookings = append(apiBookings, *toApiBooking(&booking))
+	}
+
+	return ctx.JSON(http.StatusOK, apiBookings)
 }
 
 func (s *BookingServer) GetApiV1BookingsHotel(ctx echo.Context, params api.GetApiV1BookingsHotelParams) error {
@@ -38,5 +47,10 @@ func (s *BookingServer) GetApiV1BookingsHotel(ctx echo.Context, params api.GetAp
 		log.Printf("Error getting bookings: %v\n", err)
 		return ctx.JSON(http.StatusInternalServerError, err)
 	}
-	return ctx.JSON(http.StatusOK, bookings)
+	var apiBookings []api.Booking
+	for _, booking := range *bookings {
+		apiBookings = append(apiBookings, *toApiBooking(&booking))
+	}
+
+	return ctx.JSON(http.StatusOK, apiBookings)
 }
