@@ -99,9 +99,9 @@ components:
         checkInDate:
           type: string
           description: Check-in date of the booking.
-        duration:
-          type: integer
-          description: Duration of the booking in nights.
+        checkOutDate:
+          type: string
+          description: Check-in date of the booking.
         hotelId:
           type: integer
           description: id of the hotel.
@@ -110,7 +110,7 @@ components:
           description: Room number in the hotel.
         totalPrice:
           type: number
-          format: float
+          format: double
           description: Total price of the booking.
         clientFullName:
           type: string
@@ -131,9 +131,9 @@ components:
         checkInDate:
           type: string
           description: Check-in date of the booking.
-        duration:
-          type: integer
-          description: Duration of the booking in nights.
+        checkOutDate:
+          type: string
+          description: Check-in date of the booking.
         clientFullName:
           type: string
           description: Full name of the client.

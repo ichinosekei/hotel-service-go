@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"booking_service/internal/grpc"
 	"booking_service/pkg/api/v1"
 	"booking_service/pkg/models"
+	"fmt"
 	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -36,14 +38,43 @@ func (repo *Repository) Init(cfg Config) error {
 }
 
 func (repo *Repository) Create(bookingRequest *api.BookingRequest) error {
-	booking := LoadBookingRequest(bookingRequest)
-	booking.BookingId = uuid.NewString()
-	// TODO implement a grpc request to the hotel service
-	booking.TotalPrice = 0
-
-	err := repo.database.Create(booking).Error
+	booking, err := LoadBookingRequest(bookingRequest)
 	if err != nil {
-		log.Fatalf("Failed to create booking in data base: %v", err)
+		log.Printf("Failed to create booking request: %v", err)
+		return err
+	}
+	booking.BookingId = uuid.NewString()
+
+	// TODO implement a grpc request to the hotel service
+	hotelierClient, err := grpc.NewHotelierClient("")
+	if err != nil {
+		log.Printf("Failed to create hoteler client: %v", err)
+		return err
+	}
+	roomPrice, err := hotelierClient.GetRoomPrice(booking.HotelId, booking.RoomNumber)
+	if err != nil {
+		log.Printf("Failed to get hotel room price: %v", err)
+		return err
+	}
+	booking.TotalPrice = roomPrice * ((booking.CheckOutDate.Sub(booking.CheckInDate)).Hours())
+	// TODO implement a grpc request to the hotel service
+
+	var existingBookings []Booking
+	err = repo.database.Where("room_number = ? AND hotel_id = ? AND (check_in_date < ? AND check_out_date > ?)",
+		booking.RoomNumber, booking.HotelId, booking.CheckOutDate, booking.CheckInDate).
+		Find(&existingBookings).Error
+	if err != nil {
+		log.Printf("Error checking for overlapping data: %v", err)
+		return err
+	}
+	if len(existingBookings) > 0 {
+		err := fmt.Errorf("booking dates overlap with an existing booking for room %v in hotel %v", booking.RoomNumber, booking.HotelId)
+		log.Printf("Failed to create booking in data base: %v", err)
+		return err
+	}
+	err = repo.database.Create(booking).Error
+	if err != nil {
+		log.Printf("Failed to create booking in data base: %v", err)
 	}
 	return err
 }

@@ -4,16 +4,9 @@
 package api
 
 import (
-	"bytes"
-	"compress/gzip"
-	"encoding/base64"
 	"fmt"
 	"net/http"
-	"net/url"
-	"path"
-	"strings"
 
-	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/labstack/echo/v4"
 	"github.com/oapi-codegen/runtime"
 )
@@ -26,14 +19,14 @@ type Booking struct {
 	// CheckInDate Check-in date of the booking.
 	CheckInDate *string `json:"checkInDate,omitempty"`
 
+	// CheckOutDate Check-in date of the booking.
+	CheckOutDate *string `json:"checkOutDate,omitempty"`
+
 	// ClientFullName Full name of the client.
 	ClientFullName *string `json:"clientFullName,omitempty"`
 
 	// ClientPhoneNumber Phone number of the client.
 	ClientPhoneNumber *string `json:"clientPhoneNumber,omitempty"`
-
-	// Duration Duration of the booking in nights.
-	Duration *int `json:"duration,omitempty"`
 
 	// HotelId id of the hotel.
 	HotelId *int `json:"hotelId,omitempty"`
@@ -42,7 +35,7 @@ type Booking struct {
 	RoomNumber *int `json:"roomNumber,omitempty"`
 
 	// TotalPrice Total price of the booking.
-	TotalPrice *float32 `json:"totalPrice,omitempty"`
+	TotalPrice *float64 `json:"totalPrice,omitempty"`
 }
 
 // BookingRequest defines model for BookingRequest.
@@ -50,14 +43,14 @@ type BookingRequest struct {
 	// CheckInDate Check-in date of the booking.
 	CheckInDate *string `json:"checkInDate,omitempty"`
 
+	// CheckOutDate Check-in date of the booking.
+	CheckOutDate *string `json:"checkOutDate,omitempty"`
+
 	// ClientFullName Full name of the client.
 	ClientFullName *string `json:"clientFullName,omitempty"`
 
 	// ClientPhoneNumber Phone number of the client.
 	ClientPhoneNumber *string `json:"clientPhoneNumber,omitempty"`
-
-	// Duration Duration of the booking in nights.
-	Duration *int `json:"duration,omitempty"`
 
 	// HotelId Id of the hotel.
 	HotelId *int `json:"hotelId,omitempty"`
@@ -176,97 +169,4 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	router.GET(baseURL+"/api/v1/bookings/client", wrapper.GetApiV1BookingsClient)
 	router.GET(baseURL+"/api/v1/bookings/hotel", wrapper.GetApiV1BookingsHotel)
 
-}
-
-// Base64 encoded, gzipped, json marshaled Swagger object
-var swaggerSpec = []string{
-
-	"H4sIAAAAAAAC/+yWzXIbNwzHX4XD9riW5CY9VDc7blId6tG4H5dOpkMtIQnJLkmDWCWajN69A3J3I2k3",
-	"jpvUnR56kwjyDwL4AdwPuvR18A4cRz3/oGO5hdqkn9fev0W3kZ+BfABihGRYZcPCyh8LsSQMjN7puf7N",
-	"4X0DanGj/FrxFlS7d6ILzfsAeq4jk6geCl1uoXy7cDeGYaj0QowX6JQ1DI9SqxAcv2yq6tbUI4JiUc7U",
-	"vVg+8IDWcusd3Db1Cmgol4zKJesjFG1DJp88F7ppLWcxKnTK4WbL8UgPHcMGSAS3nqEaKwHaTiltGT9N",
-	"3tefiuzO+7oLDN3nlNizqZaE5UjKfxWbCmIcqeDaU21Yz/W68oY/imfX+nDoV/zqDZQs3lom7+C+gchD",
-	"NP9H6imQWvybSA3LLkvo1n6oe7VcqLUnVRtnNhJhTpcyzmYHXeg5YuRKdFuI1C9AO0HzarnQhd4Bxax6",
-	"OZlNZhKSD+BMQD3XzyazyTNd6GB4m0CbmoDT3eW0008o+ozkGXUEgptRDt71lXiHvE1pCOR3aMEqC2yw",
-	"SvcUoFP9pBZ66SNfBfz98rpzVWjK/F97u0/Ue8fgkm8TQoVlOj19EzMceabLr28J1nquv5l+HPrTduJP",
-	"z1orZV38IIHVc6YG0kIM3sXcbN/NLv9p79ntaQK7csWmLCHGdVNVe1WmrNqJlOn5bDZM+7Wxqo1FXaif",
-	"MUbR8MLfzlRoFbrQsIwC04r8MFI779YVlqLQ3cJUBMbuFbzHyDHRJ3Xc4A6ckh5I8KUJQ8ZtIIl/P3bD",
-	"hWMgZ6rEIZD6kciTulBXTjUO3gcoGayCtOrLsiFK8R4KHZu6NrQ/hmvV568YsDnNXSE32MAIoXfAhLAT",
-	"mQojS693R1N8RsUAJa6x7PprZSJY5VMnI6lwNLiGAL+CU35f5NtIM5GpgYGinv8xeDukOR4ciCjb7hug",
-	"vS60SwNah6P5eo5vcYRi//akA8Ppeng9YH32t1hHhjo+GvrevyEy+7EmuOpL05WgH2xf3AGnZUsyz4cy",
-	"t57VS984qy7UrT8mQ9ZO+R8oPhn4r4DPMzHOfnoGvgL99hnpgEeOanHzech/Sm4fwXhz/sXcP4xjfHdP",
-	"9ENsDx7U/y7LJ7mW4NtBA7ZLwxfDnesmpfo6sMdu9KRUf2r0ZpBTOmPyMEbU+aeNcKvko0UXuqFKz3XX",
-	"GX/GvEUfXh/+CgAA//+z/yxZBQ4AAA==",
-}
-
-// GetSwagger returns the content of the embedded swagger specification file
-// or error if failed to decode
-func decodeSpec() ([]byte, error) {
-	zipped, err := base64.StdEncoding.DecodeString(strings.Join(swaggerSpec, ""))
-	if err != nil {
-		return nil, fmt.Errorf("error base64 decoding spec: %w", err)
-	}
-	zr, err := gzip.NewReader(bytes.NewReader(zipped))
-	if err != nil {
-		return nil, fmt.Errorf("error decompressing spec: %w", err)
-	}
-	var buf bytes.Buffer
-	_, err = buf.ReadFrom(zr)
-	if err != nil {
-		return nil, fmt.Errorf("error decompressing spec: %w", err)
-	}
-
-	return buf.Bytes(), nil
-}
-
-var rawSpec = decodeSpecCached()
-
-// a naive cached of a decoded swagger spec
-func decodeSpecCached() func() ([]byte, error) {
-	data, err := decodeSpec()
-	return func() ([]byte, error) {
-		return data, err
-	}
-}
-
-// Constructs a synthetic filesystem for resolving external references when loading openapi specifications.
-func PathToRawSpec(pathToFile string) map[string]func() ([]byte, error) {
-	res := make(map[string]func() ([]byte, error))
-	if len(pathToFile) > 0 {
-		res[pathToFile] = rawSpec
-	}
-
-	return res
-}
-
-// GetSwagger returns the Swagger specification corresponding to the generated code
-// in this file. The external references of Swagger specification are resolved.
-// The logic of resolving external references is tightly connected to "import-mapping" feature.
-// Externally referenced files must be embedded in the corresponding golang packages.
-// Urls can be supported but this task was out of the scope.
-func GetSwagger() (swagger *openapi3.T, err error) {
-	resolvePath := PathToRawSpec("")
-
-	loader := openapi3.NewLoader()
-	loader.IsExternalRefsAllowed = true
-	loader.ReadFromURIFunc = func(loader *openapi3.Loader, url *url.URL) ([]byte, error) {
-		pathToFile := url.String()
-		pathToFile = path.Clean(pathToFile)
-		getSpec, ok := resolvePath[pathToFile]
-		if !ok {
-			err1 := fmt.Errorf("path not found: %s", pathToFile)
-			return nil, err1
-		}
-		return getSpec()
-	}
-	var specData []byte
-	specData, err = rawSpec()
-	if err != nil {
-		return
-	}
-	swagger, err = loader.LoadFromData(specData)
-	if err != nil {
-		return
-	}
-	return
 }
