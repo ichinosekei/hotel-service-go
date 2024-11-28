@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package hotelier;
+
+
+option go_package = "hotelier-service/internal/pkg/proto;proto";
+
+service HotelierService {
+  rpc GetRoomPrice (RoomRequest) returns (RoomResponse);
+}
+
+message RoomRequest {
+  int32 hotel_id = 1;
+  string room_number = 2;
+}
+
+message RoomResponse {
+  double price = 1;
+}
+
