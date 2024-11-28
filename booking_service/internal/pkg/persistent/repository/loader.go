@@ -11,16 +11,16 @@ func LoadBookingRequest(bookingRequest *api.BookingRequest) (*Booking, error) {
 	formattedCheckInDate, err := time.Parse("2006-01-02", *bookingRequest.CheckInDate)
 	if err != nil {
 		log.Printf("Failed to parse checkin date: %v", err)
-		return &Booking{}, err
+		return nil, err
 	}
 
 	formattedCheckOutDate, err := time.Parse("2006-01-02", *bookingRequest.CheckOutDate)
 	if err != nil {
 		log.Printf("Failed to parse checkout date: %v", err)
-		return &Booking{}, err
+		return nil, err
 	}
 	if formattedCheckOutDate.Before(formattedCheckInDate) {
-		return &Booking{}, fmt.Errorf("checkin date %v cannot be after checkout date %v", formattedCheckInDate, formattedCheckOutDate)
+		return nil, fmt.Errorf("checkin date %v cannot be after checkout date %v", formattedCheckInDate, formattedCheckOutDate)
 	}
 	return &Booking{
 		CheckInDate:       formattedCheckInDate,

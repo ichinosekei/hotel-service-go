@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"booking_service/internal/grpc"
+	"booking_service/internal/pkg/hotel_client"
 	"booking_service/pkg/api/v1"
 	"booking_service/pkg/models"
 	"fmt"
@@ -39,14 +39,14 @@ func (repo *Repository) Init(cfg Config) error {
 
 func (repo *Repository) Create(bookingRequest *api.BookingRequest) error {
 	booking, err := LoadBookingRequest(bookingRequest)
+
 	if err != nil {
 		log.Printf("Failed to create booking request: %v", err)
 		return err
 	}
 	booking.BookingId = uuid.NewString()
 
-	// TODO implement a grpc request to the hotel service
-	hotelierClient, err := grpc.NewHotelierClient("")
+	hotelierClient, err := hotel_client.NewHotelClient("")
 	if err != nil {
 		log.Printf("Failed to create hoteler client: %v", err)
 		return err
@@ -57,7 +57,11 @@ func (repo *Repository) Create(bookingRequest *api.BookingRequest) error {
 		return err
 	}
 	booking.TotalPrice = roomPrice * ((booking.CheckOutDate.Sub(booking.CheckInDate)).Hours())
-	// TODO implement a grpc request to the hotel service
+	err = hotelierClient.Close()
+	if err != nil {
+		log.Printf("Failed to close hoteler client: %v", err)
+		return err
+	}
 
 	var existingBookings []Booking
 	err = repo.database.Where("room_number = ? AND hotel_id = ? AND (check_in_date < ? AND check_out_date > ?)",
@@ -72,6 +76,7 @@ func (repo *Repository) Create(bookingRequest *api.BookingRequest) error {
 		log.Printf("Failed to create booking in data base: %v", err)
 		return err
 	}
+
 	err = repo.database.Create(booking).Error
 	if err != nil {
 		log.Printf("Failed to create booking in data base: %v", err)
