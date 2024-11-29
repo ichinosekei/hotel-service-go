@@ -1,5 +1,6 @@
 package repository
 
 type Config struct {
-	DSN string
+	DSN  string
+	Addr string
 }

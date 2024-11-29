@@ -4,7 +4,7 @@ go 1.23.2
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/ichinosekei/hotel-service-go/hotelier-service v1.0.0-testing-branch.0.20241127101923-2fcd0a770331
+	github.com/ichinosekei/hotel-service-go/hotelier-service v0.0.0-20241127101923-2fcd0a770331
 	github.com/joho/godotenv v1.4.0
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/oapi-codegen/runtime v1.1.1

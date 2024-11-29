@@ -1,7 +1,7 @@
 services:
   booking_server:
-    env_file:
-      - ../.env.dev
+    networks:
+      - app-network
     build:
       context: ..
       dockerfile: deployments/Dockerfile
@@ -13,8 +13,8 @@ services:
     restart: always
 
   booking_db:
-    env_file:
-      - ../.env.dev
+    networks:
+      - app-network
     image: postgres:14
     container_name: booking-db
     ports:
@@ -23,11 +23,14 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-      HOTELIER_SERVICE_HOST: hotelier-service
-      HOTELIER_SERVICE_GRPC_PORT: 50051
-
+      HOTELIER_SERVICE_HOST: ${HOTEL_SERVICE_HOST}
+      HOTELIER_SERVICE_GRPC_PORT: ${HOTEL_SERVICE_PORT}
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:
+    external: true

@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/ichinosekei/hotel-service-go/hotelier-service/proto"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"strconv"
 	"time"
@@ -16,7 +15,8 @@ type HotelClient struct {
 }
 
 func NewHotelClient(address string) (*HotelClient, error) {
-	connection, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	connection, err := grpc.Dial(address, grpc.WithInsecure())
+
 	if err != nil {
 		log.Printf("Failed to connect to HotelService: %v", err)
 		return nil, err

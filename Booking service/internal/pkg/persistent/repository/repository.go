@@ -12,7 +12,8 @@ import (
 )
 
 type Repository struct {
-	database *gorm.DB
+	database  *gorm.DB
+	hotelAddr string
 }
 
 func NewRepository() *Repository {
@@ -20,6 +21,7 @@ func NewRepository() *Repository {
 }
 func (repo *Repository) Init(cfg Config) error {
 	var err error
+	repo.hotelAddr = cfg.Addr
 	repo.database, err = gorm.Open(postgres.Open(cfg.DSN), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -40,7 +42,7 @@ func (repo *Repository) Create(bookingRequest *models.BookingRequest) error {
 	booking := LoadBookingRequest(bookingRequest)
 	booking.BookingId = uuid.NewString()
 
-	hotelierClient, err := clients.NewHotelClient("hotelier-service:50051")
+	hotelierClient, err := clients.NewHotelClient(repo.hotelAddr)
 	if err != nil {
 		log.Printf("Failed to create hoteler client: %v", err)
 		return err
@@ -50,7 +52,7 @@ func (repo *Repository) Create(bookingRequest *models.BookingRequest) error {
 		log.Printf("Failed to get hotel room price: %v", err)
 		return err
 	}
-	booking.TotalPrice = roomPrice * ((booking.CheckOutDate.Sub(booking.CheckInDate)).Hours())
+	booking.TotalPrice = roomPrice * ((booking.CheckOutDate.Sub(booking.CheckInDate)).Hours()) / 24
 	err = hotelierClient.Close()
 	if err != nil {
 		log.Printf("Failed to close hoteler client: %v", err)

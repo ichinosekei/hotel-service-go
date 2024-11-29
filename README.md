@@ -1,2 +1,4 @@
-# hotel-service-go
- бронирования отеля на языке go
+# Start
+```console
+docker-compose --env-file ../.env.dev --env-file .env up --build
+```
