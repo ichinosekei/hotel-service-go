@@ -44,3 +44,5 @@ RUN chmod +x ./hotelier-service-bin
 
 # Run the binary
 CMD ["./hotelier-service-bin", "-config", "./config.yaml"]
+
+EXPOSE 50051
