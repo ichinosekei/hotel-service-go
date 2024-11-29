@@ -40,7 +40,7 @@ func (repo *Repository) Create(bookingRequest *models.BookingRequest) error {
 	booking := LoadBookingRequest(bookingRequest)
 	booking.BookingId = uuid.NewString()
 
-	hotelierClient, err := clients.NewHotelClient("")
+	hotelierClient, err := clients.NewHotelClient("hotelier-service:50051")
 	if err != nil {
 		log.Printf("Failed to create hoteler client: %v", err)
 		return err

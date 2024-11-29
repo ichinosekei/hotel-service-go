@@ -5,7 +5,7 @@ info:
   description: API for managing client and hotel bookings.
 
 servers:
-  - url: /booking_service
+  - url: /Booking service
     description: Booking Service base path
 
 paths:

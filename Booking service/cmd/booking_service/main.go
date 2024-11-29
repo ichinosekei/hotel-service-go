@@ -24,7 +24,7 @@ func main() {
 			" user=" + os.Getenv("DB_USER") +
 			" password=" + os.Getenv("DB_PASSWORD") +
 			" dbname=" + os.Getenv("DB_NAME") +
-			" port=" + os.Getenv("DB_PORT") +
+			" port=" + os.Getenv("DB_INTERNAL_PORT") +
 			" sslmode=disable",
 	}
 
@@ -33,7 +33,7 @@ func main() {
 	}
 
 	server := api.NewBookingServer()
-	err := server.Init(Config, echo.New(), ":"+os.Getenv("SERVER_PORT"))
+	err := server.Init(Config, echo.New(), ":"+os.Getenv("SERVER_INTERNAL_PORT"))
 	if err != nil {
 		log.Fatalf("Failed to initialize service: %v", err)
 	}
