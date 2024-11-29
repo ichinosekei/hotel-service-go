@@ -1,0 +1,142 @@
+openapi: 3.0.3
+info:
+  title: Booking Service API
+  version: "1.0.0"
+  description: API for managing client and hotel bookings.
+
+servers:
+  - url: /Booking service
+    description: Booking Service base path
+
+paths:
+  /api/v1/bookings/client:
+    get:
+      summary: Get client bookings
+      description: Retrieve a list of bookings for a specific client based on their phone number.
+      parameters:
+        - name: phoneNumber
+          in: query
+          description: The phone number of the client.
+          required: true
+          schema:
+            type: string
+            format: phone
+      responses:
+        '200':
+          description: A list of client bookings.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '400':
+          description: Bad Request - Missing or invalid phone number.
+        '404':
+          description: Not Found - No bookings found for the given phone number.
+        '500':
+          description: Internal Server Error - An unexpected error occurred.
+
+  /api/v1/bookings:
+    post:
+      summary: Create a booking
+      description: Create a new booking with the provided details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingRequest'
+      responses:
+        '201':
+          description: Booking successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Bad Request - Missing or invalid input data.
+        '409':
+          description: Conflict - Booking already exists for the given room and date range.
+        '500':
+          description: Internal Server Error - An unexpected error occurred.
+
+  /api/v1/bookings/hotel:
+    get:
+      summary: Get bookings for a specific hotel
+      description: Retrieve a list of bookings for a hotel based on its ID.
+      parameters:
+        - name: hotelId
+          in: query
+          description: The unique ID of the hotel.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of bookings for the specified hotel.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '400':
+          description: Bad Request - Missing or invalid hotel ID.
+        '404':
+          description: Not Found - No bookings found for the specified hotel.
+        '500':
+          description: Internal Server Error - An unexpected error occurred.
+
+components:
+  schemas:
+    Booking:
+      type: object
+      properties:
+        bookingId:
+          type: string
+          description: Unique ID of the booking.
+        checkInDate:
+          type: string
+          description: Check-in date of the booking.
+        checkOutDate:
+          type: string
+          description: Check-in date of the booking.
+        hotelId:
+          type: integer
+          description: id of the hotel.
+        roomNumber:
+          type: integer
+          description: Room number in the hotel.
+        totalPrice:
+          type: number
+          format: double
+          description: Total price of the booking.
+        clientFullName:
+          type: string
+          description: Full name of the client.
+        clientPhoneNumber:
+          type: string
+          description: Phone number of the client.
+
+    BookingRequest:
+      type: object
+      properties:
+        hotelId:
+          type: integer
+          description: Id of the hotel.
+        roomNumber:
+          type: integer
+          description: Room number in the hotel.
+        checkInDate:
+          type: string
+          description: Check-in date of the booking.
+        checkOutDate:
+          type: string
+          description: Check-in date of the booking.
+        clientFullName:
+          type: string
+          description: Full name of the client.
+        clientPhoneNumber:
+          type: string
+          description: Phone number of the client.
