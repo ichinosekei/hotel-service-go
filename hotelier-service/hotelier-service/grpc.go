@@ -22,9 +22,9 @@ func startGRPCServer(service *repository.Service) (*grpc.Server, net.Listener, e
 	// Регистрируем реализацию сервиса
 	proto.RegisterHotelierServiceServer(grpcServer, hotelierServer)
 
-	log.Println("gRPC server started on :50051", lis.Addr())
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	//log.Println("gRPC server started on :50051", lis.Addr())
+	//if err := grpcServer.Serve(lis); err != nil {
+	//	log.Fatalf("failed to serve: %v", err)
+	//}
 	return grpcServer, lis, err
 }
