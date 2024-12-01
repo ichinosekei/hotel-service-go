@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-// APIHandler  обработчик API, содержащий зависимости для передачи из main
+// APIHandler обработчик API, содержащий зависимости для передачи из main
 type APIHandler struct {
 	service *repository.Service
 	tracer  trace.Tracer

@@ -2,22 +2,22 @@ package api
 
 import (
 	"context"
-	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/repository"
+	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/app"
 	"github.com/ichinosekei/hotel-service-go/hotelier-service/proto"
 	"log"
 )
 
 type HotelierServer struct {
 	proto.UnimplementedHotelierServiceServer
-	Service *repository.Service
+	service app.HotelService
 }
 
-func NewHotelierServer(service *repository.Service) *HotelierServer {
-	return &HotelierServer{Service: service}
+func NewHotelierServer(service app.HotelService) *HotelierServer {
+	return &HotelierServer{service: service}
 }
 
 func (s *HotelierServer) GetRoomPrice(ctx context.Context, req *proto.RoomRequest) (*proto.RoomResponse, error) {
-	roomPrice, err := s.Service.GetRoomPrice(req.HotelId, req.RoomNumber)
+	roomPrice, err := s.service.GetRoomPrice(req.HotelId, req.RoomNumber)
 	if err != nil {
 		log.Printf("Error retrieving room price: %v", err)
 		return nil, err

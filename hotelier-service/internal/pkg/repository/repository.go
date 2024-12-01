@@ -172,9 +172,12 @@ func (s *Service) GetRoomPrice(hotelID int32, roomNumber string) (float64, error
 	query := "SELECT price FROM Rooms WHERE hotel_id = $1 AND room_number = $2"
 	err := s.Db.QueryRow(query, hotelID, roomNumber).Scan(&price)
 	if err != nil {
-		return 0, fmt.Errorf("room not found: %v", err)
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, fmt.Errorf("room with number %s not found in hotel %d", roomNumber, hotelID)
+		}
+		return 0, fmt.Errorf("error retrieving price for room %s in hotel %d: %v", roomNumber, hotelID, err)
 	}
-	log.Println(price)
+	log.Printf("Room price for room %s in hotel %d is %f", roomNumber, hotelID, price)
 	return price, nil
 }
 
