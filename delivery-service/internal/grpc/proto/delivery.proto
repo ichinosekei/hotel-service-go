@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package delivery;
+
+option go_package = "delivery-service/internal/grpc/proto";
+
+service DeliveryService {
+  rpc SendNotification(NotificationRequest) returns (NotificationResponse);
+}
+
+message NotificationRequest {
+  string client_phone = 1;
+  string hotelier_phone = 2;
+  string check_in_date = 3;
+  string check_out_date = 4;
+  string room_number = 5;
+}
+
+message NotificationResponse {
+  string status = 1;
+}

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  delivery-service:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    ports:
+      - "50052:50052"
+    env_file:
+      - ../../.env.dev
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true

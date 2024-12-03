@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package delivery;
+
+option go_package = "notification-service/internal/grpc/proto";
+
+// Определение gRPC-сервиса
+service DeliveryService {
+  rpc SendNotification(NotificationRequest) returns (NotificationResponse);
+}
+
+// Сообщение для запроса отправки уведомления
+message NotificationRequest {
+  string client_phone = 1;      // Телефон клиента
+  string hotelier_phone = 2;    // Телефон отельера
+  string check_in_date = 3;     // Дата заезда
+  string check_out_date = 4;    // Дата выезда
+  string room_number = 5;       // Номер комнаты
+}
+
+// Сообщение для ответа после отправки уведомления
+message NotificationResponse {
+  string status = 1;            // Статус выполнения (например, "Notification sent successfully")
+  string error_message = 2;     // Сообщение об ошибке (если есть)
+}
