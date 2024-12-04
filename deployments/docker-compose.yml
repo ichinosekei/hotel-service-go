@@ -1,0 +1,39 @@
+
+services:
+  hotelier-service:
+    networks:
+      - app-network
+    build:
+      #context: D:\hotel-service-go
+      context: ..
+      dockerfile: hotelier-service/hotelier-service/Dockerfile
+    ports:
+      - "8082:8080"
+      - "50051:50051"  #  gRPC
+
+    volumes:
+      - ../configs:/app/configs
+    environment:
+      - CONFIG_PATH=/app/configs/hotelier-config.yaml
+    depends_on:
+      - database
+
+  database:
+    networks:
+      - app-network
+    image: postgres:14
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hotelier
+    ports:
+      - "5434:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:
+
+networks:
+  app-network:
+    external: true
