@@ -88,6 +88,26 @@ paths:
         '500':
           description: Internal Server Error - An unexpected error occurred.
 
+  /api/v1/webhook/payment:
+    post:
+      summary: Webhook for processing payment status
+      description: This endpoint receives the payment status from the Payment System and updates the booking status accordingly.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentWebhookRequest'
+      responses:
+        '200':
+          description: Webhook successfully processed.
+        '400':
+          description: Bad Request - Invalid data format.
+        '404':
+          description: Not Found - Booking with the specified `bookingId` not found.
+        '500':
+          description: Internal Server Error - An error occurred while processing the request.
+
 components:
   schemas:
     Booking:
@@ -118,9 +138,19 @@ components:
         clientPhoneNumber:
           type: string
           description: Phone number of the client.
-
+        paymentStatus:
+          type: string
+          enum: [ paid, not paid ]
+          description: Status of the payment
     BookingRequest:
       type: object
+      required:
+        - checkInDate
+        - checkOutDate
+        - clientFullName
+        - clientPhoneNumber
+        - hotelId
+        - roomNumber
       properties:
         hotelId:
           type: integer
@@ -140,3 +170,20 @@ components:
         clientPhoneNumber:
           type: string
           description: Phone number of the client.
+    PaymentWebhookRequest:
+      required:
+        - paymentId
+        - bookingId
+        - status
+      type: object
+      properties:
+        paymentId:
+          type: string
+          description: Unique identifier for the payment.
+        bookingId:
+          type: string
+          description: Identifier for the booking associated with this payment.
+        status:
+          type: string
+          enum: [ ok, failed ]
+          description: Status of the payment (success or failure).

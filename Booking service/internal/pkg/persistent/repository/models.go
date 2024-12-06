@@ -11,6 +11,7 @@ type Booking struct {
 	HotelId           int       `gorm:"not null"`
 	RoomNumber        int       `gorm:"not null"`
 	TotalPrice        float64   `gorm:"not null"`
+	PaymentStatus     string    `gorm:"not null"`
 }
 
 type Bookings []Booking

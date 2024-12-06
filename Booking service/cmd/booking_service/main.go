@@ -26,7 +26,7 @@ func main() {
 			" dbname=" + os.Getenv("DB_NAME") +
 			" port=" + os.Getenv("DB_INTERNAL_PORT") +
 			" sslmode=disable",
-		Addr: os.Getenv("HOTEL_SERVICE_HOST") + ":" + os.Getenv("HOTEL_SERVICE_PORT"),
+		HotelAddr: os.Getenv("HOTEL_SERVICE_HOST") + ":" + os.Getenv("HOTEL_SERVICE_PORT"),
 	}
 
 	Config := config.Config{

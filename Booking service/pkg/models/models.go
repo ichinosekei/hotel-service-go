@@ -13,6 +13,7 @@ type Booking struct {
 	HotelId           int
 	RoomNumber        int
 	TotalPrice        float64
+	PaymentStatus     string
 }
 
 type BookingRequest struct {

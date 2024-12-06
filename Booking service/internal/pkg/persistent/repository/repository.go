@@ -12,8 +12,9 @@ import (
 )
 
 type Repository struct {
-	database  *gorm.DB
-	hotelAddr string
+	database    *gorm.DB
+	hotelAddr   string
+	paymentAddr string
 }
 
 func NewRepository() *Repository {
@@ -21,7 +22,8 @@ func NewRepository() *Repository {
 }
 func (repo *Repository) Init(cfg Config) error {
 	var err error
-	repo.hotelAddr = cfg.Addr
+	repo.hotelAddr = cfg.HotelAddr
+	repo.paymentAddr = cfg.PaymentAddr
 	repo.database, err = gorm.Open(postgres.Open(cfg.DSN), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -53,6 +55,7 @@ func (repo *Repository) Create(bookingRequest *models.BookingRequest) error {
 		return err
 	}
 	booking.TotalPrice = roomPrice * ((booking.CheckOutDate.Sub(booking.CheckInDate)).Hours()) / 24
+	booking.PaymentStatus = "not paid"
 	err = hotelierClient.Close()
 	if err != nil {
 		log.Printf("Failed to close hoteler client: %v", err)
@@ -64,7 +67,7 @@ func (repo *Repository) Create(bookingRequest *models.BookingRequest) error {
 		booking.RoomNumber, booking.HotelId, booking.CheckOutDate, booking.CheckInDate).
 		Find(&existingBookings).Error
 	if err != nil {
-		log.Printf("Error checking for overlapping data: %v", err)
+		log.Printf("Failed to checking for overlapping data: %v", err)
 		return err
 	}
 	if len(existingBookings) > 0 {
@@ -73,33 +76,63 @@ func (repo *Repository) Create(bookingRequest *models.BookingRequest) error {
 		return err
 	}
 
+	paymentClient := clients.NewPaymentClient(repo.paymentAddr, booking.TotalPrice, booking.BookingId)
+	err = paymentClient.InitiatePayment()
+	if err != nil {
+		log.Printf("Failed to initiate payment: %v", err)
+		return err
+	}
+
 	err = repo.database.Create(booking).Error
 	if err != nil {
 		log.Printf("Failed to create booking in data base: %v", err)
+		return err
 	}
-	return err
+	log.Printf("Booking created in data base: %v", booking.HotelId)
+	return nil
 }
 func (repo *Repository) GetClient(phoneNumber string) (*models.Bookings, error) {
 	var bookings Bookings
 	err := repo.database.Where("client_phone_number = ?", phoneNumber).Find(&bookings).Error
 	if err != nil {
-		log.Printf("Error getting from data base: %v", err)
+		log.Printf("Failed to getting from data base: %v", err)
+		return nil, err
 	}
 	var modelsBookings models.Bookings
 	for _, booking := range bookings {
 		modelsBookings = append(modelsBookings, *toModelsBooking(&booking))
 	}
+	log.Printf("Getting bookings from data base with phoneNumber: %v", phoneNumber)
 	return &modelsBookings, err
 }
 func (repo *Repository) GetHotel(id int) (*models.Bookings, error) {
 	var bookings Bookings
 	err := repo.database.Where("hotel_id = ?", id).Find(&bookings).Error
 	if err != nil {
-		log.Printf("Error getting from data base: %v", err)
+		log.Printf("Failed to getting from data base: %v", err)
+		return nil, err
 	}
 	var modelsBookings models.Bookings
 	for _, booking := range bookings {
 		modelsBookings = append(modelsBookings, *toModelsBooking(&booking))
 	}
+	log.Printf("Getting bookings from data base with hotelId: %v", id)
 	return &modelsBookings, err
+}
+
+func (repo *Repository) UpdatePaymentStatus(bookingId string) error {
+	var booking Booking
+	err := repo.database.Where("booking_id = ?", bookingId).First(&booking).Error
+	if err != nil {
+		log.Printf("Failed to find in data base: %v", err)
+		return err
+	}
+	booking.PaymentStatus = "paid"
+	err = repo.database.Save(&booking).Error
+	if err != nil {
+		log.Printf("Failed to update booking in data base: %v", err)
+		return err
+	}
+	log.Printf("Updated booking in data base: %v", booking)
+	return nil
 }

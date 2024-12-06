@@ -9,13 +9,13 @@ import (
 )
 
 func fromApiBookingRequest(bookingRequest *api.BookingRequest) (*models.BookingRequest, error) {
-	formattedCheckInDate, err := time.Parse("2006-01-02", *bookingRequest.CheckInDate)
+	formattedCheckInDate, err := time.Parse("2006-01-02", bookingRequest.CheckInDate)
 	if err != nil {
 		log.Printf("Failed to parse checkin date: %v", err)
 		return nil, err
 	}
 
-	formattedCheckOutDate, err := time.Parse("2006-01-02", *bookingRequest.CheckOutDate)
+	formattedCheckOutDate, err := time.Parse("2006-01-02", bookingRequest.CheckOutDate)
 	if err != nil {
 		log.Printf("Failed to parse checkout date: %v", err)
 		return nil, err
@@ -25,11 +25,11 @@ func fromApiBookingRequest(bookingRequest *api.BookingRequest) (*models.BookingR
 	}
 	return &models.BookingRequest{
 		CheckInDate:       formattedCheckInDate,
-		ClientFullName:    *bookingRequest.ClientFullName,
-		ClientPhoneNumber: *bookingRequest.ClientPhoneNumber,
+		ClientFullName:    bookingRequest.ClientFullName,
+		ClientPhoneNumber: bookingRequest.ClientPhoneNumber,
 		CheckOutDate:      formattedCheckOutDate,
-		HotelId:           *bookingRequest.HotelId,
-		RoomNumber:        *bookingRequest.RoomNumber,
+		HotelId:           bookingRequest.HotelId,
+		RoomNumber:        bookingRequest.RoomNumber,
 	}, nil
 }
 
@@ -46,5 +46,6 @@ func toApiBooking(booking *models.Booking) *api.Booking {
 		HotelId:           &booking.HotelId,
 		RoomNumber:        &booking.RoomNumber,
 		TotalPrice:        &booking.TotalPrice,
+		PaymentStatus:     (*api.BookingPaymentStatus)(&booking.PaymentStatus),
 	}
 }

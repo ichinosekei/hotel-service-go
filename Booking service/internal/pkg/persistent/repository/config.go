@@ -1,6 +1,7 @@
 package repository
 
 type Config struct {
-	DSN  string
-	Addr string
+	DSN         string
+	HotelAddr   string
+	PaymentAddr string
 }

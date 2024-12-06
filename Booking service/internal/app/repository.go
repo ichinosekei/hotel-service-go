@@ -8,4 +8,5 @@ type Repository interface {
 	Create(*models.BookingRequest) error
 	GetClient(string) (*models.Bookings, error)
 	GetHotel(int) (*models.Bookings, error)
+	UpdatePaymentStatus(string) error
 }

@@ -14,5 +14,6 @@ func toModelsBooking(booking *Booking) *models.Booking {
 		HotelId:           booking.HotelId,
 		RoomNumber:        booking.RoomNumber,
 		TotalPrice:        booking.TotalPrice,
+		PaymentStatus:     booking.PaymentStatus,
 	}
 }
