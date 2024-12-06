@@ -1,4 +1,4 @@
-
+# hotel-service-go
  бронирования отеля на языке go
 
 # Сруктура проекта
@@ -87,4 +87,3 @@ http://localhost:8080/rooms
 ```
 ## подробнее в hotel-service/api/openapi
 рг
->>>>>>> work:hotelier-service/README.md
