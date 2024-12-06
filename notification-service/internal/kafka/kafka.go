@@ -26,10 +26,10 @@ func NewConsumer(brokers []string, topic string, groupID string) (*Consumer, err
 	return &Consumer{Reader: reader}, nil
 }
 
-func NewProducer(brokers, topic string) (*kafka.Writer, error) {
-	return &kafka.Writer{
-		Addr:     kafka.TCP(brokers),
-		Topic:    topic,
-		Balancer: &kafka.LeastBytes{},
-	}, nil
-}
+//func NewProducer(brokers, topic string) (kafka.Writer, error) {
+//	return kafka.Writer{
+//		Addr:     kafka.TCP(brokers),
+//		Topic:    topic,
+//		Balancer: &kafka.LeastBytes{},
+//	}, nil
+//}

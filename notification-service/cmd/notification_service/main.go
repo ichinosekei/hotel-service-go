@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/IBM/sarama"
 	"google.golang.org/grpc"
 	pb "notification-service/internal/grpc/proto"
 	"notification-service/internal/kafka"
@@ -17,43 +17,50 @@ import (
 func main() {
 	log.Println("Notification Service starting...")
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 
-	setupSignalHandler(cancel)
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		sig := <-sigs
+		log.Printf("Received signal: %v. Initiating shutdown...", sig)
+		cancel()
+	}()
 
 	kafkaBrokers, kafkaTopic, grpcAddress := readEnvVars()
 
-	// Проверяем готовность Kafka (чтоб не писать в неоткрытые топики, создавать топик при загрузке не получилось)
-	waitForKafkaTopic(kafkaBrokers, kafkaTopic)
+	// готовность Kafka
+	if err := waitForKafkaTopic(kafkaBrokers, kafkaTopic, 60, 3*time.Second); err != nil {
+		log.Fatalf("Kafka topic '%s' is not ready: %v", kafkaTopic, err)
+	}
 
-	// Kafka Consumer
-	consumer := initializeKafkaConsumer(kafkaBrokers, kafkaTopic)
-	defer consumer.Reader.Close()
+	consumer, err := kafka.NewConsumer(kafkaBrokers, kafkaTopic, "notification-service-group")
+	if err != nil {
+		log.Fatalf("Failed to initialize Kafka consumer: %v", err)
+	}
 
-	grpcClient := initializeGrpcClient(grpcAddress)
+	grpcClient, conn := initializeGrpcClient(grpcAddress)
 
-	// Чтоб не дублировать сообщения
-	deduplicator := kafka.NewMessageDeduplicator()
+	deduplicатор := kafka.NewMessageDeduplicator()
 
-	// Kafka Consumer
-	startConsumer(ctx, consumer, grpcClient, deduplicator)
+	// Запуск Kafka Consumer
+	go consumer.Start(ctx, func(event kafka.BookingEvent) error {
+		return processBookingEvent(ctx, grpcClient, deduplicатор, event)
+	})
+
+	// Завершаем подребителя
+	go shutdownKafka(ctx, consumer)
 
 	<-ctx.Done()
-	log.Println("Shutting down...")
+
+	// Завершаем ресурсы
+	log.Println("Shutting down gracefully...")
+	shutdownGrpcClient(conn)
+	log.Println("Shutdown complete.")
 }
 
-// Обработчик сигналов для корректного завершения приложения.
-func setupSignalHandler(cancel context.CancelFunc) {
-	sigs := make(chan os.Signal, 1)
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigs
-		cancel()
-	}()
-}
-
-func readEnvVars() (string, string, string) {
+func readEnvVars() ([]string, string, string) {
 	kafkaBrokers := os.Getenv("KAFKA_BROKER")
 	if kafkaBrokers == "" {
 		log.Fatalf("KAFKA_BROKER is not set")
@@ -69,92 +76,87 @@ func readEnvVars() (string, string, string) {
 		log.Fatalf("DELIVERY_SERVICE_ADDRESS is not set")
 	}
 
-	return kafkaBrokers, kafkaTopic, grpcAddress
+	return []string{kafkaBrokers}, kafkaTopic, grpcAddress
 }
 
-func initializeKafkaConsumer(brokers, topic string) *kafka.Consumer {
-	log.Println("Initializing Kafka Consumer...")
-	consumer, err := kafka.NewConsumer([]string{brokers}, topic, "notification-service-group")
+func waitForKafkaTopic(brokers []string, topic string, retries int, retryInterval time.Duration) error {
+	log.Printf("Waiting for Kafka topic '%s' to become available...", topic)
+
+	consumer, err := kafka.NewConsumer(brokers, topic, "health-check")
 	if err != nil {
-		log.Fatalf("Failed to initialize Kafka consumer: %v", err)
+		return fmt.Errorf("failed to initialize Kafka consumer: %v", err)
 	}
-	log.Println("Kafka Consumer initialized.")
-	return consumer
+	defer consumer.Close()
+
+	// Проверяем доступность топика за ограниченное число попыток
+	for i := 0; i < retries; i++ {
+		ctx, cancel := context.WithTimeout(context.Background(), retryInterval)
+		defer cancel()
+
+		// Пробуем читать сообщение
+		_, err := consumer.Reader.FetchMessage(ctx)
+		if err == nil {
+			log.Printf("Kafka topic '%s' is ready.", topic)
+			return nil
+		}
+
+		log.Printf("Attempt %d/%d: Kafka topic '%s' not ready. Error: %v", i+1, retries, topic, err)
+		time.Sleep(retryInterval)
+	}
+
+	return fmt.Errorf("Kafka topic '%s' is not ready after %d attempts", topic, retries)
 }
 
-func initializeGrpcClient(address string) pb.DeliveryServiceClient {
+func initializeGrpcClient(address string) (pb.DeliveryServiceClient, *grpc.ClientConn) {
 	log.Println("Connecting to gRPC delivery service...")
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Failed to connect to delivery service: %v", err)
 	}
 	log.Println("gRPC client connected successfully.")
-	return pb.NewDeliveryServiceClient(conn)
+	return pb.NewDeliveryServiceClient(conn), conn
 }
 
-func waitForKafkaTopic(broker, topic string) {
-	log.Printf("Waiting for Kafka topic '%s' to become available...", topic)
-	config := sarama.NewConfig()
-	config.Metadata.Retry.Backoff = 500 * time.Millisecond
-	config.Metadata.RefreshFrequency = 2 * time.Second
-
-	for {
-		client, err := sarama.NewClient([]string{broker}, config)
-		if err != nil {
-			log.Printf("[waitForKafkaTopic] Kafka unavailable: %v. Retrying...", err)
-			time.Sleep(5 * time.Second)
-			continue
-		}
-		defer client.Close()
-
-		topics, err := client.Topics()
-		if err != nil {
-			log.Printf("[waitForKafkaTopic] Error fetching topics: %v. Retrying...", err)
-			time.Sleep(5 * time.Second)
-			continue
-		}
-
-		if topicExists(topics, topic) {
-			log.Printf("[waitForKafkaTopic] Topic '%s' is ready.", topic)
-			return
-		}
-		log.Printf("[waitForKafkaTopic] Topic '%s' not found. Retrying...", topic)
-		time.Sleep(5 * time.Second)
+func shutdownGrpcClient(conn *grpc.ClientConn) {
+	log.Println("Shutting down gRPC client...")
+	if err := conn.Close(); err != nil {
+		log.Printf("Error closing gRPC connection: %v", err)
+	} else {
+		log.Println("gRPC connection closed.")
 	}
 }
 
-// Проверяет, существует ли топик в списке.
-func topicExists(topics []string, topic string) bool {
-	for _, t := range topics {
-		if t == topic {
-			return true
-		}
+// Завершение потребителя через select case
+func shutdownKafka(ctx context.Context, consumer *kafka.Consumer) {
+	log.Println("Waiting to shutdown Kafka Consumer...")
+	select {
+	case <-ctx.Done():
+		log.Println("Context canceled, closing Kafka Consumer...")
+		consumer.Close() // Вызываем Close() без ожидания возвращаемого значения
+		log.Println("Kafka Consumer closed successfully.")
 	}
-	return false
 }
 
-func startConsumer(ctx context.Context, consumer *kafka.Consumer, grpcClient pb.DeliveryServiceClient, deduplicator *kafka.MessageDeduplicator) {
-	log.Println("Starting Kafka Consumer...")
-	go consumer.StartConsumer(ctx, func(event kafka.BookingEvent) error {
-		if deduplicator.IsDuplicate(event.EventID) {
-			log.Printf("Duplicate event detected: %s", event.EventID)
-			return nil
-		}
-
-		notification := &pb.NotificationRequest{
-			ClientPhone:   event.ClientPhone,
-			HotelierPhone: event.HotelPhone,
-			CheckInDate:   event.CheckIn,
-			CheckOutDate:  event.CheckOut,
-			RoomNumber:    event.Room,
-		}
-
-		resp, err := grpcClient.SendNotification(ctx, notification)
-		if err != nil {
-			log.Printf("Failed to send notification: %v", err)
-			return err
-		}
-		log.Printf("Notification sent successfully: %s", resp.Status)
+// обработка событий BookingEvent
+func processBookingEvent(ctx context.Context, grpcClient pb.DeliveryServiceClient, deduplicатор *kafka.MessageDeduplicator, event kafka.BookingEvent) error {
+	if deduplicатор.IsDuplicate(event.EventID) {
+		log.Printf("Duplicate event detected: %s", event.EventID)
 		return nil
-	})
+	}
+
+	notification := &pb.NotificationRequest{
+		ClientPhone:   event.ClientPhone,
+		HotelierPhone: event.HotelPhone,
+		CheckInDate:   event.CheckIn,
+		CheckOutDate:  event.CheckOut,
+		RoomNumber:    event.Room,
+	}
+
+	resp, err := grpcClient.SendNotification(ctx, notification)
+	if err != nil {
+		log.Printf("Failed to send notification: %v", err)
+		return err
+	}
+	log.Printf("Notification sent successfully: %s", resp.Status)
+	return nil
 }

@@ -3,12 +3,12 @@ package grpc
 import (
 	"context"
 	"delivery-service/internal/sms"
+	"fmt"
 	"log"
 
 	pb "delivery-service/internal/grpc/proto"
 )
 
-// gRPC-обработчик
 type DeliveryHandler struct {
 	pb.UnimplementedDeliveryServiceServer
 	SMSClient *sms.SMSClient
@@ -16,6 +16,11 @@ type DeliveryHandler struct {
 
 // Отправляет уведомление клиенту и отельеру
 func (h *DeliveryHandler) SendNotification(ctx context.Context, req *pb.NotificationRequest) (*pb.NotificationResponse, error) {
+	// Проверяем наличие SMSClient
+	if h.SMSClient == nil {
+		return nil, fmt.Errorf("SMSClient is not initialized")
+	}
+
 	clientMessage := "Ваше бронирование подтверждено. Даты: " + req.CheckInDate + " - " + req.CheckOutDate
 	hotelMessage := "Поступило новое бронирование. Клиент: " + req.ClientPhone
 

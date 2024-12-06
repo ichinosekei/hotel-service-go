@@ -18,10 +18,21 @@ func (d *MessageDeduplicator) IsDuplicate(eventID string) bool {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
-	// Проверяем обработано ли сообщение за последние 30 с
 	if lastProcessed, exists := d.messages[eventID]; exists && time.Since(lastProcessed) < 30*time.Second {
 		return true
 	}
 	d.messages[eventID] = time.Now()
 	return false
+}
+
+// Удаляем устаревшие записи из памяти.
+func (d *MessageDeduplicator) Cleanup(expiry time.Duration) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	for id, timestamp := range d.messages {
+		if time.Since(timestamp) > expiry {
+			delete(d.messages, id)
+		}
+	}
 }
