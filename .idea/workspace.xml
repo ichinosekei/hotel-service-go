@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="70a90a85-3db2-4756-8676-a965fc1ffa26" name="Changes" comment="Start coding payment system">
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/cmd/payment_system/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/app/service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/app/system.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/pkg/api/handlers.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/pkg/api/mapper.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/pkg/api/server.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/pkg/app/service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/pkg/config/config.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/pkg/persistent/system/config.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/pkg/persistent/system/mapper.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/pkg/persistent/system/models.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/internal/pkg/persistent/system/system.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentSystem/pkg/models/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/.env.dev" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/.env.dev" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/api/openapi/booking_service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/api/openapi/booking_service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/cmd/booking_service/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/cmd/booking_service/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/deployments/.env" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/deployments/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/deployments/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/deployments/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/deployments/docker-compose.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/app/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/app/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/app/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/app/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/app/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/app/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/api/handlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/api/handlers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/api/mapper.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/api/mapper.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/api/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/api/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/app/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/app/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/clients/hotel_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/clients/hotel_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/clients/payment_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/clients/payment_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/persistent/repository/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/persistent/repository/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/persistent/repository/loader.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/persistent/repository/loader.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/persistent/repository/mapper.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/persistent/repository/mapper.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/persistent/repository/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/persistent/repository/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/internal/pkg/persistent/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/internal/pkg/persistent/repository/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/pkg/api/v1/server.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/pkg/api/v1/server.gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Booking service/pkg/models/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/BookingService/pkg/models/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/api/openapi/payment_system.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentSystem/api/openapi/payment_system.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/cmd/payment_system/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/deployments/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentSystem/deployments/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentSystem/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentSystem/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/internal/app/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentSystem/internal/app/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/internal/app/service.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/internal/app/system.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/internal/pkg/api/handlers.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/internal/pkg/api/server.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/pkg/api/v1/server.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentSystem/pkg/api/v1/server.gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment System/pkg/models/models.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deployments/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/deployments/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/api/protobufs/hotelier_service.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/go.mod" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/go.sum" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/hotelier-service/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/hotelier-service/grpc.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/hotelier-service/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/internal/app/service.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/internal/pkg/api/grpc_server.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/internal/pkg/api/server.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/internal/pkg/repository/repository.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/proto/hotelier_service.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hotelier-service/proto/hotelier_service_grpc.pb.go" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file://$USER_HOME$/Downloads/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="0a78ef8c2dd1f204c00c0c74dbc351c2bc936f97" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;dfsavffc&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ichinosekei/hotel-service-go&quot;,
+    &quot;accountId&quot;: &quot;5fab3a76-cf89-404e-aafe-5b5de2958f39&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2ouH9NYSR9vNUXEYHLVgLWpYK2C" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "Docker.deployments: Compose Deployment.executor": "Run",
+    "Go Build.go build booking_service.executor": "Run",
+    "Go Build.go build booking_service/cmd/booking_service.executor": "Run",
+    "Go Build.go build booking_service/cmd/server.executor": "Run",
+    "Go Build.go build cmd/.executor": "Run",
+    "Go Build.go build github.com/ichinosekei/hotel-service-go/tree/dfsavffc/cmd/server.executor": "Run",
+    "Go Build.go build hotel-service-go main.go.executor": "Run",
+    "Go Build.go build main.go.executor": "Run",
+    "Go Build.go build payment_system/cmd/payment_system.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "PaymentSystem",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/Users/Dfsavffc/Programming/Go/hotel-service-go/Payment System/deployments",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Payment System/deployments" />
+      <recent name="$PROJECT_DIR$/Booking service/deployments" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/hotel_service" />
+      <recent name="$PROJECT_DIR$/delivery_system" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/deployments" />
+      <recent name="$PROJECT_DIR$/hotelier-service/deployments" />
+      <recent name="$PROJECT_DIR$/hotelier-service" />
+      <recent name="$PROJECT_DIR$/Payment System" />
+      <recent name="$PROJECT_DIR$/Payment System/cmd/payment_system" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Build.go build main.go">
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="hotel-service-go" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/test/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build payment_system/cmd/payment_system" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+      <module name="hotel-service-go" />
+      <working_directory value="$PROJECT_DIR$/Booking service" />
+      <kind value="DIRECTORY" />
+      <package value="booking_service" />
+      <directory value="$PROJECT_DIR$/Payment System/cmd/payment_system" />
+      <filePath value="$PROJECT_DIR$/../hotel-service-go|$PROJECT_DIR$/booking_service/cmd/server/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="deployments/docker-compose1.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="envFilePath" value="" />
+          <option name="sourceFilePath" value="deployments/docker-compose1.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Docker.deployments/docker-compose1.yml: Compose Deployment" />
+      <item itemvalue="Go Build.go build payment_system/cmd/payment_system" />
+      <item itemvalue="Go Build.go build main.go" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Docker.deployments/docker-compose1.yml: Compose Deployment" />
+        <item itemvalue="Docker.deployments/docker-compose1.yml: Compose Deployment" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-5df93f7ad4aa-df9ad98b711f-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-242.21829.220" />
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-GO-242.21829.220" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName=".env" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="initial" />
+    <MESSAGE value="fixing imports" />
+    <MESSAGE value="Refactor structure of the service and make first working version" />
+    <MESSAGE value="Add env and uuid generation" />
+    <MESSAGE value="Add logging and graceful shutdown" />
+    <MESSAGE value="Fix project structure" />
+    <MESSAGE value="Fix get from db" />
+    <MESSAGE value="Fix" />
+    <MESSAGE value="Booking Service REBORN" />
+    <MESSAGE value="Try to solve TODO" />
+    <MESSAGE value="Add grpc request to hotel service" />
+    <MESSAGE value="Rename directory" />
+    <MESSAGE value="Removed API dependencies in internal/api/service.go" />
+    <MESSAGE value="Now server starts in Docker compose&#10;&#10;Need to fix:&#10;1) .env.dev file&#10;2) grpc connection" />
+    <MESSAGE value="Fix grpc connection" />
+    <MESSAGE value="Add .env.dev and move README.md" />
+    <MESSAGE value="Merge" />
+    <MESSAGE value="Start coding payment system" />
+    <option name="LAST_COMMIT_MESSAGE" value="Start coding payment system" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>

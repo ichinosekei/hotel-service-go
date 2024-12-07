@@ -1,5 +1,40 @@
 
 services:
+  booking_server:
+    env_file:
+    - ../BookingService/.env.dev
+    - ../BookingService/deployments/.env
+    networks:
+      - app-network
+    build:
+      context: ../BookingService
+      dockerfile: ../BookingService/deployments/Dockerfile
+    container_name: booking-server
+    ports:
+      - "${SERVER_EXTERNAL_PORT}:${SERVER_INTERNAL_PORT}"
+    depends_on:
+      - booking_db
+    restart: always
+
+  booking_db:
+    env_file:
+      - ../BookingService/.env.dev
+      - ../BookingService/deployments/.env
+    networks:
+      - app-network
+    image: postgres:14
+    container_name: booking-db
+    ports:
+      - "${DB_EXTERNAL_PORT}:${DB_INTERNAL_PORT}"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      HOTELIER_SERVICE_HOST: ${HOTEL_SERVICE_HOST}
+      HOTELIER_SERVICE_GRPC_PORT: ${HOTEL_SERVICE_PORT}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   hotelier-service:
     networks:
       - app-network
@@ -14,7 +49,7 @@ services:
     volumes:
       - ../configs:/app/configs
     environment:
-      - CONFIG_PATH=/app/configs/hotelier-config.yaml
+      - CONFIG_PATH=/app/configs/hotelier-configs.yaml
     depends_on:
       - database
 
@@ -33,6 +68,7 @@ services:
 
 volumes:
   pg_data:
+  postgres_data:
 
 networks:
   app-network:
