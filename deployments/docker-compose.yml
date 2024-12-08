@@ -1,15 +1,11 @@
-
 services:
-  booking_server:
-    env_file:
-    - ../BookingService/.env.dev
-    - ../BookingService/deployments/.env
+  booking_service:
     networks:
       - app-network
     build:
-      context: ../BookingService
-      dockerfile: ../BookingService/deployments/Dockerfile
-    container_name: booking-server
+      context: ../booking_service
+      dockerfile: deployments/Dockerfile
+    container_name: booking-service
     ports:
       - "${SERVER_EXTERNAL_PORT}:${SERVER_INTERNAL_PORT}"
     depends_on:
@@ -17,31 +13,29 @@ services:
     restart: always
 
   booking_db:
-    env_file:
-      - ../BookingService/.env.dev
-      - ../BookingService/deployments/.env
-    networks:
-      - app-network
-    image: postgres:14
-    container_name: booking-db
-    ports:
-      - "${DB_EXTERNAL_PORT}:${DB_INTERNAL_PORT}"
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-      HOTELIER_SERVICE_HOST: ${HOTEL_SERVICE_HOST}
-      HOTELIER_SERVICE_GRPC_PORT: ${HOTEL_SERVICE_PORT}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      networks:
+        - app-network
+      image: postgres:14
+      container_name: booking-db
+      ports:
+        - "${DB_EXTERNAL_PORT}:${DB_INTERNAL_PORT}"
+      environment:
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+        POSTGRES_DB: ${DB_NAME}
+        HOTELIER_SERVICE_HOST: ${HOTEL_SERVICE_HOST}
+        HOTELIER_SERVICE_GRPC_PORT: ${HOTEL_SERVICE_PORT}
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
 
-  hotelier-service:
+  hotelier_service:
     networks:
       - app-network
     build:
       #context: D:\hotel-service-go
-      context: ..
-      dockerfile: hotelier-service/hotelier-service/Dockerfile
+      context: ../hotelier_service
+      dockerfile: deployments/Dockerfile
+    container_name: hotelier-service
     ports:
       - "8082:8080"
       - "50051:50051"  #  gRPC
@@ -49,14 +43,16 @@ services:
     volumes:
       - ../configs:/app/configs
     environment:
-      - CONFIG_PATH=/app/configs/hotelier-configs.yaml
+      - CONFIG_PATH=/app/configs/hotelier-config.yaml
     depends_on:
-      - database
+      - hotelier_db
+    restart: always
 
-  database:
+  hotelier_db:
     networks:
       - app-network
     image: postgres:14
+    container_name: hotelier-db
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -66,6 +62,15 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  payment_system:
+    networks:
+      - app-network
+    build:
+      context: ../payment_system
+      dockerfile: deployments/Dockerfile
+    container_name: payment-system
+    ports:
+      - "8079:8080"
 volumes:
   pg_data:
   postgres_data:
