@@ -26,6 +26,6 @@ func (s *Service) CreateClient(bookingRequest *models.BookingRequest) error {
 	return s.repo.Create(bookingRequest)
 }
 
-func (s *Service) UpdatePaymentStatus(bookingId string) error {
-	return s.repo.UpdatePaymentStatus(bookingId)
+func (s *Service) UpdatePaymentStatusPaid(bookingId string) error {
+	return s.repo.UpdatePaymentStatusPaid(bookingId)
 }

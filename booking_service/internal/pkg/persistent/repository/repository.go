@@ -119,7 +119,7 @@ func (repo *Repository) GetHotel(id int) (*models.Bookings, error) {
 	return &modelsBookings, err
 }
 
-func (repo *Repository) UpdatePaymentStatus(bookingId string) error {
+func (repo *Repository) UpdatePaymentStatusPaid(bookingId string) error {
 	var booking Booking
 	err := repo.database.Where("booking_id = ?", bookingId).First(&booking).Error
 	if err != nil {

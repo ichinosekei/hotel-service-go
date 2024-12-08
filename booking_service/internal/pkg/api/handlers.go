@@ -66,7 +66,7 @@ func (s *BookingServer) PostApiV1WebhookPayment(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, fmt.Errorf("booking has not been paid"))
 	}
 
-	err := s.bookingService.Service.UpdatePaymentStatus(paymentRequest.BookingId)
+	err := s.bookingService.Service.UpdatePaymentStatusPaid(paymentRequest.BookingId)
 	if err != nil {
 		log.Printf("Error updating booking: %v\n", err)
 		return ctx.JSON(http.StatusInternalServerError, err)

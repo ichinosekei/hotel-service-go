@@ -29,10 +29,10 @@ func (s *PaymentServer) PostApiV1Payments(ctx echo.Context) error {
 	go func() {
 		time.Sleep(2 * time.Second)
 		err = s.paymentService.Service.Send(WebhookRequest)
+		if err != nil {
+			log.Printf("Error sending webhook: %v\n", err)
+		}
 	}()
-	if err != nil {
-		log.Printf("Error sending webhook: %v\n", err)
-		return ctx.JSON(http.StatusInternalServerError, err)
-	}
+
 	return ctx.JSON(http.StatusOK, response)
 }

@@ -23,7 +23,7 @@ func NewPaymentSystem(cfg Config) *PaymentSystem {
 func (s *PaymentSystem) Create(paymentRequest *models.PaymentRequest) (*models.PaymentResponse, error) {
 	paymentID := uuid.NewString()
 	response := PaymentResponse{
-		"0",
+		"https://payment/" + paymentID,
 		paymentID,
 	}
 	return toModelPaymentResponse(&response), nil
