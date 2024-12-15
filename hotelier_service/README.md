@@ -59,7 +59,8 @@ hotel-service-go/
 * Запуск
   Для запуска hotelier service и базы данных в Docker:
 ``` bash
-docker-compose up --build
+docker-compose --env-file ../.env --env-file ../hotelier_service/deployments/.env up --build
+
 ```
 ## Немного о запросах 
 

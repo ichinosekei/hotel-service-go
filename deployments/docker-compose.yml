@@ -8,6 +8,7 @@ services:
     container_name: booking-service
     ports:
       - "${SERVER_EXTERNAL_PORT}:${SERVER_INTERNAL_PORT}"
+#      - 8081:8080
     depends_on:
       - booking_db
     restart: always
@@ -19,12 +20,18 @@ services:
       container_name: booking-db
       ports:
         - "${DB_EXTERNAL_PORT}:${DB_INTERNAL_PORT}"
+#        - 5433:5432
       environment:
         POSTGRES_USER: ${DB_USER}
+#        POSTGRES_USER: booking_user
         POSTGRES_PASSWORD: ${DB_PASSWORD}
+#        POSTGRES_PASSWORD: booking_password
         POSTGRES_DB: ${DB_NAME}
+#        POSTGRES_DB: booking_db
         HOTELIER_SERVICE_HOST: ${HOTEL_SERVICE_HOST}
+#        HOTELIER_SERVICE_HOST: hotelier-service
         HOTELIER_SERVICE_GRPC_PORT: ${HOTEL_SERVICE_PORT}
+#        HOTELIER_SERVICE_GRPC_PORT: 50051
       volumes:
         - postgres_data:/var/lib/postgresql/data
 
@@ -32,14 +39,18 @@ services:
     networks:
       - app-network
     build:
-      #context: D:\hotel-service-go
       context: ../hotelier_service
       dockerfile: deployments/Dockerfile
+
+    env_file:
+      - ../.env
+      - ../hotelier_service/deployments/.env
     container_name: hotelier-service
     ports:
-      - "8082:8080"
-      - "50051:50051"  #  gRPC
-
+      - "${SERVICE_EXTERNAL_PORT}:${SERVICE_INTERNAL_PORT}"
+#      - "8082:8080"
+#      - "50051:50051"  #  gRPC
+      - "${EXTERNAL_SERVER_GRPC_PORT}:${INTERNAL_SERVER_GRPC_PORT}"
     volumes:
       - ../configs:/app/configs
     environment:
@@ -54,11 +65,12 @@ services:
     image: postgres:14
     container_name: hotelier-db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: hotelier
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5434:5432"
+#      - "5434:5432"
+      - "${DB_EXTERNAL_PORT}:${DB_INTERNAL_PORT}"
     volumes:
       - pg_data:/var/lib/postgresql/data
 

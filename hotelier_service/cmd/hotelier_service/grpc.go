@@ -10,8 +10,8 @@ import (
 	_ "net/url"
 )
 
-func startGRPCServer(service app.HotelService) (*grpc.Server, net.Listener, error) {
-	lis, err := net.Listen("tcp", ":50051") // Порт gRPC сервера
+func startGRPCServer(service app.HotelService, config Config) (*grpc.Server, net.Listener, error) {
+	lis, err := net.Listen("tcp", ":" + config.Server.InternalGrpcPort) // Порт gRPC сервера
 	if err != nil {
 		return nil, nil, err
 	}

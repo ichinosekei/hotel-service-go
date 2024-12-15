@@ -1,39 +1,59 @@
 package main
 
 import (
-	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	//"gopkg.in/yaml.v3"
+	//"io/ioutil"
 	"log"
+    "os"
+	//"github.com/joho/godotenv"
 )
+func getEnv(key, defaultValue string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		log.Printf("Using environment variable %s", key)
+		return value
+	}
+	log.Printf("Environment variable %s not set", key)
+	return defaultValue
+}
 
 // Загружаем конфигурацию
 func loadConfig() Config {
-	file, err := ioutil.ReadFile("./configs/hotelier-config.yaml")
-	if err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+	return Config{
+		Server: ServerConfig{
+			InternalPort:    getEnv("SERVICE_INTERNAL_PORT", "8080"),
+			ExternalPort:    getEnv("SERVICE_EXTERNAL_PORT", "8082"),
+			InternalGrpcPort: getEnv("INTERNAL_SERVER_GRPC_PORT", "50051"),
+			ExternalGrpcPort: getEnv("EXTERNAL_SERVER_GRPC_PORT", "50051"),
+		},
+		Database: DatabaseConfig{
+			Host:     getEnv("DB_HOST", "localhost"),
+			Port:     getEnv("DB_PORT", "5432"),
+			User:     getEnv("DB_USER", "user"),
+			Password: getEnv("DB_PASSWORD", "password"),
+			DBName:   getEnv("DB_NAME", "hotelier"),
+			SSLMode:  getEnv("DB_SSLMODE", "disable"),
+		},
 	}
-	var config Config
-	if err := yaml.Unmarshal(file, &config); err != nil {
-		log.Fatalf("Unable to decode into struct, %v", err)
-	}
-	return config
 }
 
 // Структура конфигурации
 type Config struct {
-	Server   ServerConfig   `mapstructure:"server"`
-	Database DatabaseConfig `mapstructure:"database"`
+	Server   ServerConfig
+	Database DatabaseConfig
 }
 
 type ServerConfig struct {
-	Port string `mapstructure:"port"`
+	InternalPort    string
+	ExternalPort    string
+	InternalGrpcPort string
+	ExternalGrpcPort string
 }
 
 type DatabaseConfig struct {
-	Host     string `mapstructure:"host"`
-	Port     string `mapstructure:"port"`
-	User     string `mapstructure:"user"`
-	Password string `mapstructure:"password"`
-	DBName   string `mapstructure:"dbname"`
-	SSLMode  string `mapstructure:"sslmode"`
+	Host     string
+	Port     string
+	User     string
+	Password string
+	DBName   string
+	SSLMode  string
 }
