@@ -4,9 +4,10 @@ import (
 	//"gopkg.in/yaml.v3"
 	//"io/ioutil"
 	"log"
-    "os"
+	"os"
 	//"github.com/joho/godotenv"
 )
+
 func getEnv(key, defaultValue string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		log.Printf("Using environment variable %s", key)
@@ -20,14 +21,14 @@ func getEnv(key, defaultValue string) string {
 func loadConfig() Config {
 	return Config{
 		Server: ServerConfig{
-			InternalPort:    getEnv("SERVICE_INTERNAL_PORT", "8080"),
-			ExternalPort:    getEnv("SERVICE_EXTERNAL_PORT", "8082"),
-			InternalGrpcPort: getEnv("INTERNAL_SERVER_GRPC_PORT", "50051"),
-			ExternalGrpcPort: getEnv("EXTERNAL_SERVER_GRPC_PORT", "50051"),
+			InternalPort:     getEnv("SERVER_INTERNAL_PORT", "8080"),
+			ExternalPort:     getEnv("SERVER_EXTERNAL_PORT", "8082"),
+			InternalGrpcPort: getEnv("GRPC_INTERNAL_PORT", "50051"),
+			ExternalGrpcPort: getEnv("GRPC_EXTERNAL_PORT", "50051"),
 		},
 		Database: DatabaseConfig{
 			Host:     getEnv("DB_HOST", "localhost"),
-			Port:     getEnv("DB_PORT", "5432"),
+			Port:     getEnv("DB_INTERNAL_PORT", "5432"),
 			User:     getEnv("DB_USER", "user"),
 			Password: getEnv("DB_PASSWORD", "password"),
 			DBName:   getEnv("DB_NAME", "hotelier"),
@@ -43,8 +44,8 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	InternalPort    string
-	ExternalPort    string
+	InternalPort     string
+	ExternalPort     string
 	InternalGrpcPort string
 	ExternalGrpcPort string
 }

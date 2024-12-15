@@ -5,7 +5,7 @@ info:
   description: API for processing payments and sending webhooks to the Booking Service.
 
 servers:
-  - url: /Payment system
+  - url: /Payment payment_system
     description: payment_system base path
 
 paths:

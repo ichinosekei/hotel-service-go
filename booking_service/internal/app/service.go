@@ -22,7 +22,7 @@ func (s *Service) GetHotel(hotelId int) (*models.Bookings, error) {
 	return s.repo.GetHotel(hotelId)
 }
 
-func (s *Service) CreateClient(bookingRequest *models.BookingRequest) error {
+func (s *Service) Create(bookingRequest *models.BookingRequest) error {
 	return s.repo.Create(bookingRequest)
 }
 

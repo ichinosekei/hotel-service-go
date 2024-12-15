@@ -8,6 +8,7 @@ import (
 	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/api"
 	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/repository"
 	"github.com/ichinosekei/hotel-service-go/hotelier-service/internal/pkg/tracing"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
@@ -26,6 +27,9 @@ var service *repository.Service
 var tracer trace.Tracer
 
 func main() {
+	if err := godotenv.Load(".env.dev"); err != nil {
+		log.Fatalf("Error loading .env.dev file: %v", err)
+	}
 	// Загружаем конфигурацию
 	config := loadConfig()
 	// Устанавливаем подключение к базе данных
@@ -74,7 +78,7 @@ func main() {
 		Handler: r,
 	}
 
-	grpcServer, grpcListener, err := startGRPCServer(service,config)
+	grpcServer, grpcListener, err := startGRPCServer(service, config)
 	if err != nil {
 		log.Printf("Error starting gRPC server: %v", err)
 		cleanup()
@@ -82,7 +86,7 @@ func main() {
 	}
 
 	// Запуск сервера с graceful shutdown
-	GracefulShutdown(server, grpcServer, grpcListener, config,cleanup)
+	GracefulShutdown(server, grpcServer, grpcListener, config, cleanup)
 }
 
 // Устанавливаем подключение к базе данных
@@ -110,7 +114,7 @@ func (db DatabaseConfig) ConnectionString() string {
 }
 
 // Graceful shutdown для HTTP и gRPC серверов
-func GracefulShutdown(httpServer *http.Server, grpcServer *grpc.Server, grpcListener net.Listener, config Config,cleanup func()) {
+func GracefulShutdown(httpServer *http.Server, grpcServer *grpc.Server, grpcListener net.Listener, config Config, cleanup func()) {
 	// Канал для получения сигналов завершения
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
@@ -125,7 +129,7 @@ func GracefulShutdown(httpServer *http.Server, grpcServer *grpc.Server, grpcList
 
 	// Запуск gRPC сервера в отдельной горутине
 	go func() {
-		log.Println("Starting gRPC server on :", config.Server.InternalGrpcPort)//config.Server.InternalGrpcPort
+		log.Println("Starting gRPC server on :", config.Server.InternalGrpcPort) //config.Server.InternalGrpcPort
 		if err := grpcServer.Serve(grpcListener); err != nil {
 			log.Fatalf("gRPC server error: %v", err)
 		}

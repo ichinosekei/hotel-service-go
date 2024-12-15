@@ -20,7 +20,7 @@ func (s *BookingServer) PostApiV1Bookings(ctx echo.Context) error {
 		log.Printf("Failed to process bookings request: %v\n", err)
 		return ctx.JSON(http.StatusBadRequest, err)
 	}
-	if err = s.bookingService.Service.CreateClient(modelRequest); err != nil {
+	if err = s.bookingService.Service.Create(modelRequest); err != nil {
 		log.Printf("Error creating booking: %v\n", err)
 		return ctx.JSON(http.StatusInternalServerError, err)
 	}

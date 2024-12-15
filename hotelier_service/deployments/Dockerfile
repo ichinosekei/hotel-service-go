@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . ./
 RUN go build -o hotelier_service ./cmd/hotelier_service
-#COPY .env .env
-#COPY ../.env /app/.env
-#COPY deployments/.env /app/deployments/.env
+#COPY .env.dev.dev .env.dev.dev
+#COPY ../.env.dev.dev /app/.env.dev.dev
+#COPY deployments/.env.dev.dev /app/deployments/.env.dev.dev
 CMD ["./hotelier_service"]

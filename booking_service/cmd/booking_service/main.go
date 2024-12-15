@@ -16,7 +16,7 @@ import (
 
 func main() {
 	if err := godotenv.Load(".env.dev"); err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
+		log.Fatalf("Error loading .env.dev file: %v", err)
 	}
 
 	DataBaseConfig := repository.Config{
@@ -25,8 +25,8 @@ func main() {
 			" password=" + os.Getenv("DB_PASSWORD") +
 			" dbname=" + os.Getenv("DB_NAME") +
 			" port=" + os.Getenv("DB_INTERNAL_PORT") +
-			" sslmode=disable",
-		HotelAddr:   os.Getenv("HOTEL_SERVICE_HOST") + ":" + os.Getenv("HOTEL_SERVICE_PORT"),
+			" sslmode=" + os.Getenv("DB_SSLMODE"),
+		HotelAddr:   os.Getenv("HOTELIER_SERVICE_HOST") + ":" + os.Getenv("HOTELIER_SERVICE_GRPC_PORT"),
 		PaymentAddr: "http://" + os.Getenv("PAYMENT_SYSTEM_HOST") + ":" + os.Getenv("PAYMENT_SYSTEM_PORT"),
 	}
 
@@ -35,7 +35,7 @@ func main() {
 	}
 
 	server := api.NewBookingServer()
-	err := server.Init(Config, echo.New(), ":"+os.Getenv("SERVER_EXTERNAL_PORT"))
+	err := server.Init(Config, echo.New(), ":"+os.Getenv("SERVER_INTERNAL_PORT"))
 	if err != nil {
 		log.Fatalf("Failed to initialize service: %v", err)
 	}

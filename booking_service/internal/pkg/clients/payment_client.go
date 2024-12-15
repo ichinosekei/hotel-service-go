@@ -41,7 +41,7 @@ func (p *PaymentClient) InitiatePayment() error {
 
 	if resp.StatusCode != http.StatusOK {
 		log.Printf("Payment request failed with status %v", resp.StatusCode)
-		return fmt.Errorf("payment system responded with status: %v", resp.Status)
+		return fmt.Errorf("payment payment_system responded with status: %v", resp.Status)
 	}
 	return nil
 }

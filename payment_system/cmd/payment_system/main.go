@@ -9,27 +9,21 @@ import (
 	"os/signal"
 	"payment_system/internal/pkg/api"
 	"payment_system/internal/pkg/config"
-	"payment_system/internal/pkg/persistent/system"
 	"syscall"
 	"time"
 )
 
 func main() {
 	if err := godotenv.Load(".env.dev"); err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
+		log.Fatalf("Error loading .env.dev file: %v", err)
 	}
 
 	Config := config.Config{
-		System: system.Config{BookingAddr: "http://booking_service:8081/api/v1/webhook/payment"},
+		Addr: "http://" + os.Getenv("BOOKING_SERVICE_HOST") + ":" + os.Getenv("BOOKING_SERVICE_PORT") + "/api/v1/webhook/payment",
 	}
 
 	server := api.NewPaymentServer()
-	//err := server.Init(Config, echo.New(), ":"+os.Getenv("SERVER_EXTERNAL_PORT"))
-	err := server.Init(Config, echo.New(), ":8079")
-	if err != nil {
-		log.Fatalf("Failed to initialize service: %v", err)
-	}
-
+	server.Init(Config, echo.New(), ":"+os.Getenv("SERVER_INTERNAL_PORT"))
 	go func() {
 		if err := server.Run(); err != nil {
 			log.Fatalf("Service run failed: %v", err)

@@ -25,7 +25,7 @@ func (s *BookingServer) Init(cfg config.Config, echo *echo.Echo, PORT string) er
 	s.bookingService = app.NewBookingService()
 	err := s.bookingService.Init(cfg.Database)
 	if err != nil {
-		log.Fatal("Failed to init bookingService")
+		log.Fatal("Failed to init booking server")
 		return err
 	}
 	api.RegisterHandlers(s.echo, s)

@@ -16,7 +16,7 @@ func (s *PaymentServer) PostApiV1Payments(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, err)
 	}
 	request := fromApiPaymentRequest(&paymentRequest)
-	response, err := s.paymentService.Service.Create(request)
+	response, err := s.paymentService.Create(request)
 	if err != nil {
 		log.Printf("Error sending request: %v\n", err)
 		return ctx.JSON(http.StatusInternalServerError, err)
@@ -28,7 +28,7 @@ func (s *PaymentServer) PostApiV1Payments(ctx echo.Context) error {
 	}
 	go func() {
 		time.Sleep(2 * time.Second)
-		err = s.paymentService.Service.Send(WebhookRequest)
+		err = s.paymentService.Send(WebhookRequest)
 		if err != nil {
 			log.Printf("Error sending webhook: %v\n", err)
 		}
