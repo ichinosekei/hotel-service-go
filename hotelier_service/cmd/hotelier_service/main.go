@@ -150,8 +150,10 @@ func GracefulShutdown(httpServer *http.Server, grpcServer *grpc.Server, grpcList
 
 	// Завершаем gRPC сервер
 	grpcServer.GracefulStop()
-	grpcListener.Close()
-
+	err := grpcListener.Close()
+	if err != nil {
+		log.Fatalf("Failed to close gRPC listener: %v", err)
+	}
 	// Закрываем базу данных
 	cleanup()
 
