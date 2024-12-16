@@ -1,38 +1,74 @@
-
 services:
-  hotelier-service:
+  booking_service:
     networks:
       - app-network
     build:
-      #context: D:\hotel-service-go
-      context: ..
-      dockerfile: hotelier-service/hotelier-service/Dockerfile
+      context: ../booking_service
+      dockerfile: deployments/Dockerfile
+    container_name: booking-service
     ports:
-      - "8082:8080"
-      - "50051:50051"  #  gRPC
-
-    volumes:
-      - ../configs:/app/configs
-    environment:
-      - CONFIG_PATH=/app/configs/hotelier-config.yaml
+      - "8081:8080"
     depends_on:
-      - database
-
-  database:
+      - booking_db
+    restart: always
+  booking_db:
+    environment:
+      POSTGRES_USER: dfsavffc
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: booking-db
     networks:
       - app-network
     image: postgres:14
+    container_name: booking-db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+  hotelier_service:
+    networks:
+      - app-network
+    build:
+      context: ../hotelier_service
+      dockerfile: deployments/Dockerfile
+    container_name: hotelier-service
+    ports:
+      - "8082:8080"
+      - "50051:50051"
+    volumes:
+      - ../configs:/app/configs
+    depends_on:
+      - hotelier_db
+    restart: always
+
+
+  hotelier_db:
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: hotelier
+      POSTGRES_USER: ichinosekei
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: hotelier-db
+    networks:
+      - app-network
+    image: postgres:14
+    container_name: hotelier-db
     ports:
       - "5434:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  payment_system:
+    networks:
+      - app-network
+    build:
+      context: ../payment_system
+      dockerfile: deployments/Dockerfile
+    container_name: payment-system
+    ports:
+      - "8083:8080"
 volumes:
   pg_data:
+  postgres_data:
 
 networks:
   app-network:
