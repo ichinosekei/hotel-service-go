@@ -6,11 +6,12 @@ import (
 
 func LoadBookingRequest(bookingRequest *models.BookingRequest) *Booking {
 	return &Booking{
-		CheckInDate:       bookingRequest.CheckInDate,
-		ClientFullName:    bookingRequest.ClientFullName,
-		ClientPhoneNumber: bookingRequest.ClientPhoneNumber,
-		CheckOutDate:      bookingRequest.CheckOutDate,
-		HotelId:           bookingRequest.HotelId,
-		RoomNumber:        bookingRequest.RoomNumber,
+		CheckInDate:         bookingRequest.CheckInDate,
+		ClientFullName:      bookingRequest.ClientFullName,
+		ClientPhoneNumber:   bookingRequest.ClientPhoneNumber,
+		HotelierPhoneNumber: bookingRequest.HotelierPhoneNumber,
+		CheckOutDate:        bookingRequest.CheckOutDate,
+		HotelId:             bookingRequest.HotelId,
+		RoomNumber:          bookingRequest.RoomNumber,
 	}
 }

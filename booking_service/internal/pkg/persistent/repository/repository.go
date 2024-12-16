@@ -2,13 +2,16 @@ package repository
 
 import (
 	"booking_service/internal/pkg/clients"
+	kafka "booking_service/internal/pkg/clients/kafka"
 	"booking_service/pkg/models"
+	"context"
 	"fmt"
 	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
+	"time"
 )
 
 type Repository struct {
@@ -131,6 +134,24 @@ func (repo *Repository) UpdatePaymentStatusPaid(bookingId string) error {
 	if err != nil {
 		log.Printf("Failed to update booking in data base: %v", err)
 		return err
+	}
+	producer, err := kafka.NewProducer([]string{"kafka:9092"}, "booking-events")
+	if err != nil {
+		log.Printf("Failed to create kafka producer: %v", err)
+		return err
+	}
+	msg, err := kafka.NewBookingEventMessages(toModelsBooking(&booking))
+	if err != nil {
+		log.Printf("Failed to create kafka booking event messages: %v", err)
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = producer.Send(ctx, *msg)
+	if err != nil {
+		log.Printf("Failed to send message to kafka: %v", err)
+	}
+	err = producer.Close()
+	if err != nil {
+		log.Printf("Failed to close producer: %v", err)
 	}
 	log.Printf("Updated booking in data base: %v", booking)
 	return nil

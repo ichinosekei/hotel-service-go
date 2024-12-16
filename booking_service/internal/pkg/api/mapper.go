@@ -24,12 +24,13 @@ func fromApiBookingRequest(bookingRequest *api.BookingRequest) (*models.BookingR
 		return nil, fmt.Errorf("checkin date %v cannot be after checkout date %v", formattedCheckInDate, formattedCheckOutDate)
 	}
 	return &models.BookingRequest{
-		CheckInDate:       formattedCheckInDate,
-		ClientFullName:    bookingRequest.ClientFullName,
-		ClientPhoneNumber: bookingRequest.ClientPhoneNumber,
-		CheckOutDate:      formattedCheckOutDate,
-		HotelId:           bookingRequest.HotelId,
-		RoomNumber:        bookingRequest.RoomNumber,
+		CheckInDate:         formattedCheckInDate,
+		ClientFullName:      bookingRequest.ClientFullName,
+		ClientPhoneNumber:   bookingRequest.ClientPhoneNumber,
+		HotelierPhoneNumber: bookingRequest.HotelierPhoneNumber,
+		CheckOutDate:        formattedCheckOutDate,
+		HotelId:             bookingRequest.HotelId,
+		RoomNumber:          bookingRequest.RoomNumber,
 	}, nil
 }
 
@@ -38,14 +39,15 @@ func toApiBooking(booking *models.Booking) *api.Booking {
 	formattedCheckOutDate := booking.CheckInDate.Format("2006-01-02")
 
 	return &api.Booking{
-		BookingId:         &booking.BookingId,
-		CheckInDate:       &formattedCheckInDate,
-		ClientFullName:    &booking.ClientFullName,
-		ClientPhoneNumber: &booking.ClientPhoneNumber,
-		CheckOutDate:      &formattedCheckOutDate,
-		HotelId:           &booking.HotelId,
-		RoomNumber:        &booking.RoomNumber,
-		TotalPrice:        &booking.TotalPrice,
-		PaymentStatus:     (*api.BookingPaymentStatus)(&booking.PaymentStatus),
+		BookingId:           &booking.BookingId,
+		CheckInDate:         &formattedCheckInDate,
+		ClientFullName:      &booking.ClientFullName,
+		ClientPhoneNumber:   &booking.ClientPhoneNumber,
+		HotelierPhoneNumber: &booking.HotelierPhoneNumber,
+		CheckOutDate:        &formattedCheckOutDate,
+		HotelId:             &booking.HotelId,
+		RoomNumber:          &booking.RoomNumber,
+		TotalPrice:          &booking.TotalPrice,
+		PaymentStatus:       (*api.BookingPaymentStatus)(&booking.PaymentStatus),
 	}
 }

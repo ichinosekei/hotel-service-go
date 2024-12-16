@@ -138,6 +138,9 @@ components:
         clientPhoneNumber:
           type: string
           description: Phone number of the client.
+        hotelierPhoneNumber:
+          type: string
+          description: Phone number of the hotelier.
         paymentStatus:
           type: string
           enum: [ paid, not paid ]
@@ -149,6 +152,7 @@ components:
         - checkOutDate
         - clientFullName
         - clientPhoneNumber
+        - hotelierPhoneNumber
         - hotelId
         - roomNumber
       properties:
@@ -170,6 +174,9 @@ components:
         clientPhoneNumber:
           type: string
           description: Phone number of the client.
+        hotelierPhoneNumber:
+          type: string
+          description: Phone number of the hotelier.
     PaymentWebhookRequest:
       required:
         - paymentId
